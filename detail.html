@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Detail Produk | ReviewProduct</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      scroll-behavior: smooth;
+    }
+
+    /* Detail product image modern */
+    .detail-product-image {
+      width: 100%;
+      height: auto;
+      min-height: 320px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card-gloss {
+      background: #ffffff;
+      border-radius: 32px !important;
+      transition: all 0.2s;
+    }
+
+    .star-rating {
+      color: #fbbf24;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    .rating-progress {
+      height: 8px;
+      border-radius: 12px;
+      background-color: #eef2ff;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      border-radius: 12px;
+    }
+
+    /* Review card elegant */
+    .detail-review-card {
+      background: white;
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 0 0 1px #f0f2f5;
+      transition: all 0.2s ease;
+    }
+
+    .detail-review-card:hover {
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px #e2e8f0;
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      background: white;
+      border-radius: 48px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-outline-secondary {
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      color: #1e293b;
+    }
+
+    .btn-outline-secondary:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: #0f172a;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-primary:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+    }
+
+    .badge-modern {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .detail-product-image {
+        min-height: 240px;
+      }
+
+      .detail-review-card {
+        padding: 1.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navbarApp"></div>
+
+  <main class="container py-4 py-lg-5 px-3 px-lg-4">
+    <div id="loadingDetail" class="alert alert-light border text-center rounded-4 shadow-sm">
+      <i class="fas fa-spinner fa-spin me-2"></i> Memuat detail produk...
+    </div>
+
+    <div id="detailProduk"></div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", initDetailPage);
+
+    async function initDetailPage() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      const loading = document.getElementById("loadingDetail");
+      const container = document.getElementById("detailProduk");
+
+      if (!loading || !container) return;
+
+      if (!id) {
+        showAlert(loading, "danger", "⚠️ ID produk tidak valid.");
+        return;
+      }
+
+      try {
+        showLoading(loading);
+        const produk = await ApiService.getProdukById(id);
+        if (!produk || (produk && Object.keys(produk).length === 0)) {
+          showAlert(loading, "warning", "Produk tidak ditemukan.");
+          return;
+        }
+        loading.style.display = "none";
+        container.innerHTML = renderDetailProduk(produk);
+      } catch (error) {
+        console.error(error);
+        showAlert(loading, "danger", "Gagal memuat detail produk. Periksa koneksi atau coba lagi.");
+      }
+    }
+
+    function showLoading(element) {
+      element.style.display = "block";
+      element.className = "alert alert-light border text-center rounded-4 shadow-sm";
+      element.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Memuat detail produk...`;
+    }
+
+    function showAlert(element, type, message) {
+      element.style.display = "block";
+      element.className = `alert alert-${type} rounded-4 border-0 shadow-sm`;
+      element.innerHTML = escapeHtml(message);
+    }
+
+    function renderDetailProduk(item) {
+      const rating = toNumber(item.rating_rata_rata);
+      const totalReview = toNumber(item.total_review);
+      const reviews = Array.isArray(item.reviews) ? item.reviews : [];
+      const image = item.gambar && item.gambar.trim() !== "" ? item.gambar : "https://placehold.co/900x600?text=Tidak+Ada+Gambar";
+      const kategoriNama = item.kategori || item.kategori_detail?.nama_kategori || "-";
+      const status = item.status || "Aktif";
+
+      return `
+        <div class="row g-4 align-items-stretch mb-5">
+          <!-- Bagian Gambar -->
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 card-gloss">
+              <div class="position-relative">
+                <img src="${escapeHtml(image)}" class="detail-product-image w-100" alt="${escapeHtml(item.nama_produk || 'Produk')}" loading="lazy" onerror="this.src='https://placehold.co/900x600?text=No+Image'">
+                <div class="position-absolute top-0 start-0 m-3">
+                  <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm"><i class="fas fa-tag me-1 text-primary"></i> ${escapeHtml(kategoriNama)}</span>
+                </div>
+                <div class="position-absolute top-0 end-0 m-3">
+                  <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-3 py-2 shadow-sm"><i class="fas fa-star text-warning me-1"></i> ${rating.toFixed(1)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informasi Produk Premium -->
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 card-gloss">
+              <div class="card-body p-4 p-xl-5 d-flex flex-column">
+                <div class="mb-3 d-flex flex-wrap gap-2">
+                  <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2"><i class="fas fa-layer-group me-1"></i> ${escapeHtml(kategoriNama)}</span>
+                  <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2"><i class="fas fa-circle-check me-1"></i> ${escapeHtml(status)}</span>
+                </div>
+                <h1 class="fw-bold mb-2" style="font-size: 1.9rem;">${escapeHtml(item.nama_produk || "-")}</h1>
+                <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                  <span class="text-muted"><i class="fas fa-building me-1"></i> Brand: <strong class="text-dark">${escapeHtml(item.brand || "-")}</strong></span>
+                </div>
+                <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                  <div class="star-rating">${renderStars(rating)}</div>
+                  <strong class="fs-5">${rating.toFixed(1)}</strong>
+                  <span class="text-muted">(${totalReview.toLocaleString()} ulasan)</span>
+                </div>
+                <div class="fw-bold text-primary fs-2 mb-4">${formatRupiah(item.harga)}</div>
+                <div class="rating-summary mb-4">
+                  <div class="d-flex justify-content-between small mb-1">
+                    <span class="text-muted">Kualitas rating</span>
+                    <span class="fw-semibold">${rating.toFixed(1)} dari ${totalReview} ulasan</span>
+                  </div>
+                  <div class="progress rating-progress">
+                    <div class="progress-bar" style="width: ${getRatingPercent(rating)}%"></div>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <h6 class="fw-semibold mb-2"><i class="fas fa-align-left me-2 text-primary"></i>Deskripsi Produk</h6>
+                  <p class="text-muted lh-lg mb-0">${escapeHtml(item.deskripsi || "Belum ada deskripsi untuk produk ini.")}</p>
+                </div>
+                <div class="d-grid gap-3 mt-auto">
+                  <a href="review.html?produk_id=${encodeURIComponent(item.id)}" class="btn btn-primary rounded-pill py-2"><i class="fas fa-pen me-2"></i> Tulis Ulasan</a>
+                  <a href="index.html" class="btn btn-light rounded-pill py-2 border"><i class="fas fa-arrow-left me-2"></i> Kembali ke Koleksi</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bagian Review dan Ringkasan Rating -->
+        <section class="mt-4">
+          ${renderReviewHeader(totalReview)}
+          ${renderRatingBreakdown(reviews)}
+          ${renderReviewList(reviews)}
+        </section>
+      `;
+    }
+
+    function renderReviewHeader(totalReview) {
+      return `
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+          <div>
+            <h3 class="fw-bold mb-1"><i class="fas fa-star text-warning me-2"></i>Ulasan Pelanggan</h3>
+            <p class="text-muted mb-0">Apa kata mereka tentang produk ini.</p>
+          </div>
+          <div class="badge bg-dark bg-opacity-10 text-dark rounded-pill px-3 py-2 fw-semibold">
+            📝 Total ${totalReview.toLocaleString()} ulasan
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRatingBreakdown(reviews) {
+      if (!reviews.length) {
+        return `
+          <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+            <div class="card-body p-4 text-center text-muted">
+              <i class="fas fa-chart-simple fs-3 mb-2 opacity-50"></i>
+              <p class="mb-0">Belum ada rating untuk ditampilkan.</p>
+            </div>
+          </div>
+        `;
+      }
+
+      const total = reviews.length;
+      const counts = [5, 4, 3, 2, 1].map((star) => {
+        const count = reviews.filter((review) => toNumber(review.rating) === star).length;
+        const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+        return { star, count, percent };
+      });
+
+      return `
+        <div class="card border-0 shadow-sm rounded-4 mb-5 bg-white">
+          <div class="card-body p-4 p-lg-5">
+            <h5 class="fw-bold mb-4"><i class="fas fa-chart-line me-2 text-primary"></i>Distribusi Rating</h5>
+            <div class="row g-3">
+              ${counts.map(item => `
+                <div class="col-12">
+                  <div class="d-flex align-items-center gap-3 flex-wrap flex-sm-nowrap">
+                    <div class="small fw-semibold text-nowrap" style="min-width: 58px;">
+                      ${item.star} <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <div class="progress rating-progress flex-grow-1" style="height: 8px;">
+                      <div class="progress-bar" style="width: ${item.percent}%;"></div>
+                    </div>
+                    <div class="small text-muted text-end text-nowrap" style="min-width: 90px;">
+                      ${item.count} ulasan (${item.percent}%)
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReviewList(reviews) {
+      if (!reviews.length) {
+        return `
+          <div class="empty-state">
+            <i class="fas fa-message fa-3x text-secondary mb-3 opacity-50"></i>
+            <h5 class="fw-bold mb-2">Belum Ada Ulasan</h5>
+            <p class="text-muted mb-3">Jadilah yang pertama memberikan review untuk produk ini.</p>
+            <a href="review.html?produk_id=${encodeURIComponent(new URLSearchParams(window.location.search).get("id") || "")}" class="btn btn-primary rounded-pill px-4">✨ Tulis Review Sekarang</a>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="mt-3">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fas fa-comment-dots text-primary"></i>
+            <span class="fw-semibold">${reviews.length} Ulasan Terbaru</span>
+          </div>
+          <div class="row g-4">
+            ${reviews.map(review => renderReviewCard(review)).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReviewCard(review) {
+      const rating = toNumber(review.rating);
+      const tanggal = review.tanggal || review.created_at || "Tanggal tidak tersedia";
+      return `
+        <div class="col-12">
+          <div class="detail-review-card">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                  <h5 class="fw-bold mb-0">${escapeHtml(review.judul_review || "Tanpa Judul")}</h5>
+                  <div class="star-rating small">${renderStars(rating)}</div>
+                </div>
+                <div class="text-muted small mt-1">
+                  <i class="fas fa-user-circle me-1"></i> ${escapeHtml(review.nama_reviewer || "Anonim")}
+                  ${review.email ? `<span class="mx-1 opacity-50">•</span> <i class="fas fa-envelope me-1"></i> ${escapeHtml(review.email)}` : ""}
+                  <span class="mx-1 opacity-50">•</span>
+                  <i class="fas fa-calendar-alt me-1"></i> ${escapeHtml(tanggal)}
+                </div>
+              </div>
+              <div class="text-end bg-light px-3 py-1 rounded-pill">
+                <span class="fw-bold">${rating.toFixed(1)}</span> <i class="fas fa-star text-warning"></i>
+              </div>
+            </div>
+            <p class="text-muted lh-base mb-0 mt-2">“ ${escapeHtml(review.isi_review || "-")} ”</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function toNumber(value) {
+      const num = Number(value);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function getRatingPercent(rating) {
+      return Math.min(Math.max((rating / 5) * 100, 0), 100);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

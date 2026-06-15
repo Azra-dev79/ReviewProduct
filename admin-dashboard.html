@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Dashboard Admin - ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%); min-height: 100vh; }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-brand h3 { color: white; font-weight: 700; margin: 0; font-size: 1.4rem; }
+    .sidebar-brand p { color: #94a3b8; font-size: 0.75rem; margin: 0; }
+
+    .nav-sidebar { padding: 1rem 0; }
+    .nav-sidebar .nav-item { margin: 0.25rem 1rem; }
+    .nav-sidebar .nav-link {
+      color: #cbd5e1;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .nav-sidebar .nav-link i { width: 24px; margin-right: 12px; font-size: 1.1rem; }
+    .nav-sidebar .nav-link:hover { background: rgba(255,255,255,0.08); color: white; }
+    .nav-sidebar .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+    .main-content { padding: 1.5rem; }
+
+    .top-bar {
+      background: white;
+      border-radius: 24px;
+      padding: 0.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 28px;
+      padding: 1.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: rgba(37, 99, 235, 0.15);
+      border-radius: 50%;
+    }
+
+    .stat-dashboard-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+      border: 1px solid #f0f2f5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .stat-icon-circle {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #1e40af;
+    }
+
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
+    .stat-label { font-size: 0.7rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .chart-container {
+      background: white;
+      border-radius: 24px;
+      padding: 1.25rem;
+      border: 1px solid #f0f2f5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .chart-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+
+    .category-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+    .category-name { font-weight: 500; color: #334155; }
+    .category-count { font-weight: 700; color: #2563eb; background: #eef2ff; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; }
+
+    .progress-custom { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    .progress-bar-custom { background: linear-gradient(90deg, #2563eb, #60a5fa); height: 100%; border-radius: 10px; }
+
+    .popular-product-item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+    .popular-product-info { flex: 1; }
+    .popular-product-name { font-weight: 600; font-size: 0.85rem; color: #0f172a; }
+    .popular-product-brand { font-size: 0.7rem; color: #64748b; }
+    .popular-product-rating { font-size: 0.7rem; color: #f59e0b; }
+    .popular-product-review { font-size: 0.7rem; color: #64748b; }
+
+    .table-container {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .table-modern { margin-bottom: 0; }
+    .table-modern thead th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; font-size: 0.8rem; color: #1e293b; border-bottom: 1px solid #e2e8f0; }
+    .table-modern tbody td { padding: 0.9rem 1rem; vertical-align: middle; color: #334155; font-size: 0.85rem; }
+
+    .star-rating { color: #fbbf24; font-size: 0.7rem; letter-spacing: 2px; }
+    .rating-badge { display: inline-flex; align-items: center; gap: 4px; background: #fef3c7; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; color: #d97706; }
+
+    .empty-state { text-align: center; padding: 3rem; background: #f8fafc; border-radius: 24px; }
+    .page-loader { display: flex; justify-content: center; align-items: center; min-height: 400px; }
+
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -280px; width: 280px; transition: left 0.3s ease; z-index: 1050; }
+      .sidebar.show { left: 0; }
+      .main-content { width: 100%; padding: 1rem; }
+      .menu-toggle { display: block; }
+    }
+    @media (min-width: 769px) { .menu-toggle { display: none; } }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <div class="col-auto sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <h3>⭐ ReviewProduct</h3>
+          <p>Admin Dashboard</p>
+        </div>
+        <div class="nav-sidebar">
+          <div class="nav-item"><a href="admin-dashboard.html" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></div>
+          <div class="nav-item"><a href="admin-products.html" class="nav-link"><i class="fas fa-box"></i> Produk</a></div>
+          <div class="nav-item"><a href="admin-reviews.html" class="nav-link"><i class="fas fa-star"></i> Ulasan</a></div>
+          <div class="nav-item"><a href="admin-upload.html" class="nav-link"><i class="fas fa-plus-circle"></i> Upload Produk</a></div>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.1); margin: 0 1rem;">
+          <div class="nav-item mt-3"><div class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div></div>
+        </div>
+      </div>
+
+      <div class="col main-content">
+        <div class="top-bar d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <div><span class="fw-semibold" id="userName">Admin</span><small class="text-muted d-block" id="userRole"></small></div>
+          </div>
+          <div class="text-muted"><i class="fas fa-calendar-alt me-2"></i><span id="currentDate"></span></div>
+        </div>
+
+        <div id="pageContent">
+          <div class="page-loader"><div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p class="text-muted">Memuat data dashboard...</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    let currentUser = null;
+    let dashboardData = null;
+
+    function escapeHtml(text) { if (!text && text !== 0) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function formatRupiah(amount) { if (!amount && amount !== 0) return '-'; return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount); }
+    
+    function renderStars(rating) {
+      const numRating = Number(rating) || 0;
+      const fullStars = Math.floor(numRating);
+      const halfStar = numRating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      let stars = '';
+      for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
+      if (halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+      for (let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star"></i>';
+      return stars;
+    }
+
+    function formatDate(dateString) { if (!dateString) return '-'; const date = new Date(dateString); if (isNaN(date.getTime())) return dateString; return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); }
+async function loadDashboard() {
+  const contentDiv = document.getElementById('pageContent');
+  contentDiv.innerHTML = '<div class="page-loader"><div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p class="text-muted">Memuat data dashboard...</p></div></div>';
+  
+  try {
+    const response = await ApiService.getDashboard();
+    console.log("Dashboard response:", response);
+    
+    // Karena ApiService.getDashboard() sudah mengembalikan response.data langsung
+    // atau response dengan struktur { success, data }
+    let dashboardData = null;
+    
+    if (response && response.success === true && response.data) {
+      dashboardData = response.data;
+    } else if (response && response.total_produk !== undefined) {
+      dashboardData = response;
+    } else if (response && response.data) {
+      dashboardData = response.data;
+    } else {
+      dashboardData = response;
+    }
+
+    // Ekstrak data dengan default values
+    const { 
+      total_produk = 0, 
+      total_kategori = 0, 
+      total_review = 0, 
+      rating_rata_rata = 0, 
+      produk_terpopuler = [], 
+      statistik_kategori = [], 
+      review_terbaru = [] 
+    } = dashboardData || {};
+    
+    // Hitung max produk untuk progress bar
+    const maxProduk = statistik_kategori.length > 0 
+      ? Math.max(...statistik_kategori.map(k => k.total_produk), 1) 
+      : 1;
+
+    const html = `
+      <div class="welcome-card">
+        <div><h1 style="font-size:1.8rem;">Selamat Datang, ${escapeHtml(currentUser.nama)}</h1><p>Anda login sebagai <strong>${escapeHtml(currentUser.role)}</strong></p></div>
+      </div>
+      <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3"><div class="stat-dashboard-card"><div class="d-flex justify-content-between"><div><div class="stat-number">${total_produk.toLocaleString()}</div><div class="stat-label">Total Produk</div></div><div class="stat-icon-circle"><i class="fas fa-box-open"></i></div></div></div></div>
+        <div class="col-md-6 col-lg-3"><div class="stat-dashboard-card"><div class="d-flex justify-content-between"><div><div class="stat-number">${total_kategori.toLocaleString()}</div><div class="stat-label">Total Kategori</div></div><div class="stat-icon-circle"><i class="fas fa-tags"></i></div></div></div></div>
+        <div class="col-md-6 col-lg-3"><div class="stat-dashboard-card"><div class="d-flex justify-content-between"><div><div class="stat-number">${total_review.toLocaleString()}</div><div class="stat-label">Total Ulasan</div></div><div class="stat-icon-circle"><i class="fas fa-comments"></i></div></div></div></div>
+        <div class="col-md-6 col-lg-3"><div class="stat-dashboard-card"><div class="d-flex justify-content-between"><div><div class="stat-number">${rating_rata_rata}</div><div class="stat-label">Rating Rata-rata</div></div><div class="stat-icon-circle"><i class="fas fa-star"></i></div></div></div></div>
+      </div>
+      <div class="row g-4 mb-4">
+        <div class="col-md-6"><div class="chart-container"><div class="chart-title"><i class="fas fa-chart-pie text-primary"></i> Statistik per Kategori</div>
+          ${statistik_kategori.length > 0 ? statistik_kategori.map(cat => {
+            const percentWidth = maxProduk > 0 ? (cat.total_produk / maxProduk) * 100 : 0;
+            return `<div class="category-item"><div style="flex:1"><span class="category-name">${escapeHtml(cat.nama_kategori)}</span><div class="progress-custom"><div class="progress-bar-custom" style="width: ${percentWidth}%"></div></div></div><span class="category-count">${cat.total_produk} produk</span></div>`;
+          }).join('') : '<div class="text-center text-muted py-3">Belum ada data kategori</div>'}
+        </div></div>
+        <div class="col-md-6"><div class="chart-container"><div class="chart-title"><i class="fas fa-fire text-primary"></i> Produk Terpopuler</div>
+          ${produk_terpopuler.length > 0 ? produk_terpopuler.map(p => `<div class="popular-product-item"><div class="popular-product-info"><div class="popular-product-name">${escapeHtml(p.nama_produk)}</div><div class="popular-product-brand">${escapeHtml(p.brand || '-')}</div><div class="popular-product-rating">${renderStars(p.rating)} (${p.rating})</div><div class="popular-product-review"><i class="far fa-comment-dots"></i> ${p.total_review} ulasan</div></div><div>${p.total_review > 0 ? `<span class="rating-badge"><i class="fas fa-star"></i> ${p.rating}</span>` : '<span class="badge bg-secondary">Belum review</span>'}</div></div>`).join('') : '<div class="text-center text-muted py-3">Belum ada data produk</div>'}
+        </div></div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-3"><h3 class="fw-bold fs-5"><i class="fas fa-star text-primary me-2"></i>Ulasan Terbaru</h3><a href="admin-reviews.html" class="btn btn-sm btn-outline-primary rounded-pill">Lihat Semua</a></div>
+      <div class="table-container">${review_terbaru.length > 0 ? `
+        <table class="table table-modern"><thead><tr><th>ID Produk</th><th>Reviewer</th><th>Judul</th><th>Rating</th><th>Tanggal</th></tr></thead>
+        <tbody>${review_terbaru.map(r => `<tr><td>${r.produk_id}</td><td>${escapeHtml(r.nama_reviewer)}</td><td>${escapeHtml(r.judul_review)}</td><td>${renderStars(r.rating)} (${r.rating})</td><td>${formatDate(r.tanggal)}</td></tr>`).join('')}</tbody>
+      </table>
+      ` : '<div class="empty-state"><p class="text-muted">Belum ada ulasan</p></div>'}</div>
+    `;
+    contentDiv.innerHTML = html;
+  } catch (error) {
+    console.error("Error:", error);
+    contentDiv.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle fa-2x text-danger"></i><p class="text-danger mt-2">Gagal memuat data dashboard</p><p class="text-muted small">${error.message}</p><button class="btn btn-primary mt-2" onclick="location.reload()">Coba Lagi</button></div>`;
+  }
+}
+    async function init() {
+      currentUser = Session.get();
+      if (!currentUser) { window.location.href = "login.html"; return; }
+      if (currentUser.role !== "admin") { Swal.fire({ icon: "error", title: "Akses Ditolak" }).then(() => window.location.href = "index.html"); return; }
+      
+      document.getElementById("userName").innerHTML = escapeHtml(currentUser.nama);
+      document.getElementById("userRole").innerHTML = currentUser.role;
+      document.getElementById("currentDate").innerHTML = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      
+      document.getElementById('logoutBtn').addEventListener('click', () => { Session.remove(); window.location.href = "login.html"; });
+      document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('show'); });
+      
+      await loadDashboard();
+    }
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

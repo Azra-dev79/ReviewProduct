@@ -1,0 +1,24 @@
+
+```
+review-barang
+├─ README.md
+├─ assets
+│  ├─ Kode.gs
+│  ├─ css
+│  │  └─ style.css
+│  ├─ db_review_product.xlsx
+│  └─ js
+│     ├─ api.js
+│     ├─ config.js
+│     ├─ detail-page.js
+│     ├─ helpers.js
+│     ├─ navbar.js
+│     ├─ products-page.js
+│     ├─ review-page.js
+│     └─ upload-page.js
+├─ detail.html
+├─ index.html
+├─ review.html
+└─ upload.html
+
+```

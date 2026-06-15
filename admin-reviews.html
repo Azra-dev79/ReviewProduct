@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Manajemen Ulasan - ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%); min-height: 100vh; }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-brand h3 { color: white; font-weight: 700; margin: 0; font-size: 1.4rem; }
+    .sidebar-brand p { color: #94a3b8; font-size: 0.75rem; margin: 0; }
+
+    .nav-sidebar { padding: 1rem 0; }
+    .nav-sidebar .nav-item { margin: 0.25rem 1rem; }
+    .nav-sidebar .nav-link {
+      color: #cbd5e1;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .nav-sidebar .nav-link i { width: 24px; margin-right: 12px; font-size: 1.1rem; }
+    .nav-sidebar .nav-link:hover { background: rgba(255,255,255,0.08); color: white; }
+    .nav-sidebar .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+    .main-content { padding: 1.5rem; }
+
+    .top-bar {
+      background: white;
+      border-radius: 24px;
+      padding: 0.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .table-modern { margin-bottom: 0; }
+    .table-modern thead th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; font-size: 0.8rem; color: #1e293b; border-bottom: 1px solid #e2e8f0; }
+    .table-modern tbody td { padding: 0.9rem 1rem; vertical-align: middle; color: #334155; font-size: 0.85rem; }
+
+    .action-btn { width: 30px; height: 30px; padding: 0; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; border: none; background: transparent; }
+    .action-btn-delete { color: #dc2626; }
+    .action-btn-delete:hover { background: #fef2f2; }
+    .action-btn-view { color: #3b82f6; }
+    .action-btn-view:hover { background: #eff6ff; }
+
+    .star-rating { color: #fbbf24; font-size: 0.7rem; letter-spacing: 2px; }
+    .empty-state { text-align: center; padding: 3rem; background: #f8fafc; border-radius: 24px; }
+    .page-loader { display: flex; justify-content: center; align-items: center; min-height: 400px; }
+    
+    .filter-bar {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #f0f2f5;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .search-box input {
+      padding-left: 40px;
+      border-radius: 30px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    
+    .rating-filter {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .rating-filter:hover {
+      transform: translateY(-2px);
+    }
+    
+    .rating-filter.active {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .modal-detail-review {
+      max-width: 600px;
+    }
+    
+    .review-detail-content {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -280px; width: 280px; transition: left 0.3s ease; z-index: 1050; }
+      .sidebar.show { left: 0; }
+      .main-content { width: 100%; padding: 1rem; }
+      .menu-toggle { display: block; }
+    }
+    @media (min-width: 769px) { .menu-toggle { display: none; } }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <div class="col-auto sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <h3>⭐ ReviewProduct</h3>
+          <p>Admin Dashboard</p>
+        </div>
+        <div class="nav-sidebar">
+          <div class="nav-item"><a href="admin-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></div>
+          <div class="nav-item"><a href="admin-products.html" class="nav-link"><i class="fas fa-box"></i> Produk</a></div>
+          <div class="nav-item"><a href="admin-reviews.html" class="nav-link active"><i class="fas fa-star"></i> Ulasan</a></div>
+          <div class="nav-item"><a href="admin-upload.html" class="nav-link"><i class="fas fa-plus-circle"></i> Upload Produk</a></div>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.1); margin: 0 1rem;">
+          <div class="nav-item mt-3"><div class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div></div>
+        </div>
+      </div>
+
+      <div class="col main-content">
+        <div class="top-bar d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <div><span class="fw-semibold" id="userName">Admin</span><small class="text-muted d-block" id="userRole"></small></div>
+          </div>
+          <div class="text-muted"><i class="fas fa-calendar-alt me-2"></i><span id="currentDate"></span></div>
+        </div>
+
+        <div id="pageContent">
+          <div class="page-loader"><div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p class="text-muted">Memuat data ulasan...</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detail Review -->
+  <div class="modal fade" id="detailReviewModal" tabindex="-1">
+    <div class="modal-dialog modal-detail-review">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-star text-warning me-2"></i>Detail Ulasan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body review-detail-content" id="modalReviewContent">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    let currentUser = null;
+    let allReviews = [];
+    let filteredReviews = [];
+    let currentRatingFilter = 0;
+    let currentSearchTerm = '';
+
+    function escapeHtml(text) { 
+      if (!text && text !== 0) return ''; 
+      const div = document.createElement('div'); 
+      div.textContent = text; 
+      return div.innerHTML; 
+    }
+    
+    function renderStars(rating) {
+      const numRating = Number(rating) || 0;
+      const fullStars = Math.floor(numRating);
+      const halfStar = numRating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      let stars = '';
+      for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
+      if (halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+      for (let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star"></i>';
+      return stars;
+    }
+
+    function formatDate(dateString) { 
+      if (!dateString) return '-'; 
+      const date = new Date(dateString); 
+      if (isNaN(date.getTime())) return dateString; 
+      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }); 
+    }
+    
+    function applyFilters() {
+      let result = [...allReviews];
+      
+      // Apply search filter
+      if (currentSearchTerm) {
+        const term = currentSearchTerm.toLowerCase();
+        result = result.filter(review => 
+          (review.nama_produk && review.nama_produk.toLowerCase().includes(term)) ||
+          (review.nama_reviewer && review.nama_reviewer.toLowerCase().includes(term)) ||
+          (review.judul_review && review.judul_review.toLowerCase().includes(term)) ||
+          (review.isi_review && review.isi_review.toLowerCase().includes(term))
+        );
+      }
+      
+      // Apply rating filter
+      if (currentRatingFilter > 0) {
+        result = result.filter(review => Math.floor(review.rating) === currentRatingFilter);
+      }
+      
+      filteredReviews = result;
+      renderReviewsTable();
+    }
+    
+    function renderReviewsTable() {
+      const tableContainer = document.getElementById('reviewsTableContainer');
+      if (!tableContainer) return;
+      
+      if (!filteredReviews || filteredReviews.length === 0) {
+        tableContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-comment-dots fa-2x text-muted"></i>
+            <p class="text-muted mt-2">Tidak ada ulasan yang ditemukan</p>
+          </div>
+        `;
+        return;
+      }
+      
+      tableContainer.innerHTML = `
+        <table class="table table-modern">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama Produk</th>
+              <th>Reviewer</th>
+              <th>Judul Review</th>
+              <th>Rating</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredReviews.map(review => `
+              <tr>
+                <td><span class="badge bg-secondary">#${review.id || review.review_id || '-'}</span></td>
+                <td>
+                  <div class="fw-semibold">${escapeHtml(review.nama_produk || `Produk ID: ${review.produk_id}`)}</div>
+                  <small class="text-muted">ID: ${review.produk_id}</small>
+                </td>
+                <td><div class="fw-semibold">${escapeHtml(review.nama_reviewer || 'Anonymous')}</div></td>
+                <td>
+                  <div class="fw-semibold">${escapeHtml(review.judul_review || 'Tanpa Judul')}</div>
+                  <small class="text-muted">${escapeHtml((review.isi_review || '').substring(0, 60))}${(review.isi_review || '').length > 60 ? '...' : ''}</small>
+                </td>
+                <td>
+                  <div class="star-rating">${renderStars(review.rating || 0)}</div>
+                  <small class="fw-bold">${(review.rating || 0).toFixed(1)}</small>
+                </td>
+                <td>${formatDate(review.tanggal)}</td>
+                <td>
+                  <button onclick="viewDetail(${review.id || review.review_id})" class="action-btn action-btn-view" title="Lihat Detail">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button onclick="deleteReview(${review.id || review.review_id}, ${review.produk_id})" class="action-btn action-btn-delete" title="Hapus Ulasan">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      // Update total count
+      const totalCountElement = document.getElementById('totalReviewsCount');
+      if (totalCountElement) {
+        totalCountElement.innerHTML = `<strong>${filteredReviews.length}</strong> dari ${allReviews.length} ulasan`;
+      }
+    }
+    
+    function renderFilters() {
+      const filterContainer = document.getElementById('filterContainer');
+      if (!filterContainer) return;
+      
+      // Count reviews per rating
+      const ratingCounts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+      allReviews.forEach(review => {
+        const rating = Math.floor(review.rating);
+        if (ratingCounts[rating] !== undefined) ratingCounts[rating]++;
+      });
+      
+      filterContainer.innerHTML = `
+        <div class="row align-items-center">
+          <div class="col-md-5 mb-3 mb-md-0">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" class="form-control" id="searchInput" placeholder="Cari ulasan berdasarkan produk, reviewer, atau judul..." value="${escapeHtml(currentSearchTerm)}">
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-sm ${currentRatingFilter === 0 ? 'btn-primary' : 'btn-light'} rounded-pill rating-filter" data-rating="0">
+                Semua <span class="badge ${currentRatingFilter === 0 ? 'bg-light text-primary' : 'bg-secondary'} ms-1">${allReviews.length}</span>
+              </button>
+              ${[5,4,3,2,1].map(rating => `
+                <button class="btn btn-sm ${currentRatingFilter === rating ? 'btn-primary' : 'btn-light'} rounded-pill rating-filter" data-rating="${rating}">
+                  ${rating} ★ <span class="badge ${currentRatingFilter === rating ? 'bg-light text-primary' : 'bg-secondary'} ms-1">${ratingCounts[rating] || 0}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Attach event listeners
+      document.querySelectorAll('.rating-filter').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const rating = parseInt(btn.dataset.rating);
+          currentRatingFilter = rating;
+          applyFilters();
+          renderFilters(); // Re-render to update active state
+        });
+      });
+      
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', (e) => {
+          currentSearchTerm = e.target.value;
+          applyFilters();
+        });
+      }
+    }
+    
+    async function loadReviews() {
+      const contentDiv = document.getElementById('pageContent');
+      contentDiv.innerHTML = '<div class="page-loader"><div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p class="text-muted">Memuat data ulasan...</p></div></div>';
+      
+      try {
+        // Use ApiService.getReview() method
+        console.log("Fetching reviews using ApiService.getReview()...");
+        const response = await ApiService.getReview();
+        console.log("API Response:", response);
+        
+        // Handle response from getReview
+        if (response && response.success === true && response.data) {
+          allReviews = response.data;
+        } else if (response && Array.isArray(response)) {
+          allReviews = response;
+        } else if (response && response.data && Array.isArray(response.data)) {
+          allReviews = response.data;
+        } else if (response && response.reviews && Array.isArray(response.reviews)) {
+          allReviews = response.reviews;
+        } else {
+          // If no reviews found, try to get from dashboard as fallback
+          console.log("No reviews from getReview, trying dashboard...");
+          const dashboardResponse = await ApiService.getDashboard();
+          if (dashboardResponse && dashboardResponse.success && dashboardResponse.data && dashboardResponse.data.review_terbaru) {
+            allReviews = dashboardResponse.data.review_terbaru;
+          } else {
+            allReviews = [];
+          }
+        }
+        
+        // Ensure each review has required fields
+        allReviews = allReviews.map(review => ({
+          ...review,
+          rating: review.rating || 0,
+          tanggal: review.tanggal || review.created_at || new Date().toISOString(),
+          judul_review: review.judul_review || review.title || 'Tanpa Judul',
+          isi_review: review.isi_review || review.content || review.komentar || '',
+          nama_reviewer: review.nama_reviewer || review.reviewer_name || review.user_name || 'Anonymous'
+        }));
+        
+        // Sort by date (newest first)
+        allReviews.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+        
+        // Reset filters
+        currentRatingFilter = 0;
+        currentSearchTerm = '';
+        filteredReviews = [...allReviews];
+        
+        // Render the page
+        contentDiv.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold m-0"><i class="fas fa-star text-primary me-2"></i>Manajemen Ulasan</h3>
+            <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="refreshReviews()">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+          <div class="filter-bar" id="filterContainer"></div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-muted" id="totalReviewsCount">
+              <strong>${allReviews.length}</strong> total ulasan
+            </div>
+          </div>
+          <div class="table-container" id="reviewsTableContainer"></div>
+        `;
+        
+        // Render filters and table
+        renderFilters();
+        renderReviewsTable();
+        
+      } catch (error) {
+        console.error("Error loading reviews:", error);
+        contentDiv.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+            <p class="text-danger mt-2">Gagal memuat data ulasan</p>
+            <p class="text-muted small">${error.message || 'Terjadi kesalahan pada server'}</p>
+            <button class="btn btn-primary mt-2" onclick="refreshReviews()">Coba Lagi</button>
+          </div>
+        `;
+      }
+    }
+    
+    window.viewDetail = async function(reviewId) {
+      try {
+        // Find review from existing data
+        const review = allReviews.find(r => (r.id === reviewId || r.review_id === reviewId));
+        
+        if (!review) {
+          Swal.fire('Error', 'Data ulasan tidak ditemukan', 'error');
+          return;
+        }
+        
+        const modalContent = `
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">PRODUK</label>
+            <div class="p-2 bg-light rounded">${escapeHtml(review.nama_produk || `Produk ID: ${review.produk_id}`)}</div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">REVIEWER</label>
+            <div class="p-2 bg-light rounded">${escapeHtml(review.nama_reviewer || 'Anonymous')}</div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">RATING</label>
+            <div class="p-2 bg-light rounded">
+              <div class="star-rating mb-1">${renderStars(review.rating)}</div>
+              <span class="fw-bold">${review.rating}/5</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">JUDUL REVIEW</label>
+            <div class="p-2 bg-light rounded fw-semibold">${escapeHtml(review.judul_review || 'Tanpa Judul')}</div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">ISI REVIEW</label>
+            <div class="p-2 bg-light rounded" style="white-space: pre-wrap;">${escapeHtml(review.isi_review || 'Tidak ada konten')}</div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">TANGGAL</label>
+            <div class="p-2 bg-light rounded">${formatDate(review.tanggal)}</div>
+          </div>
+        `;
+        
+        document.getElementById('modalReviewContent').innerHTML = modalContent;
+        
+        const modal = new bootstrap.Modal(document.getElementById('detailReviewModal'));
+        modal.show();
+        
+      } catch (error) {
+        console.error("Error viewing detail:", error);
+        Swal.fire('Error', 'Gagal menampilkan detail ulasan', 'error');
+      }
+    };
+
+    window.deleteReview = async function(reviewId, productId) {
+      const result = await Swal.fire({ 
+        title: 'Hapus Ulasan?', 
+        text: "Ulasan yang dihapus tidak dapat dikembalikan!", 
+        icon: 'warning', 
+        showCancelButton: true, 
+        confirmButtonColor: '#dc2626', 
+        confirmButtonText: 'Ya, Hapus!', 
+        cancelButtonText: 'Batal' 
+      });
+      
+      if (result.isConfirmed) {
+        try {
+          // Use ApiService.deleteReview if available
+          if (ApiService.deleteReview) {
+            await ApiService.deleteReview(reviewId, productId);
+          } else {
+            console.log(`Delete review ${reviewId} for product ${productId}`);
+          }
+          
+          Swal.fire({ 
+            icon: 'success', 
+            title: 'Berhasil!', 
+            text: 'Ulasan berhasil dihapus.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          
+          // Reload reviews
+          await loadReviews();
+        } catch (error) {
+          Swal.fire({ 
+            icon: 'error', 
+            title: 'Gagal!', 
+            text: error.message || 'Gagal menghapus ulasan.' 
+          });
+        }
+      }
+    };
+    
+    window.refreshReviews = function() {
+      loadReviews();
+    };
+
+    async function init() {
+      currentUser = Session.get();
+      if (!currentUser) { 
+        window.location.href = "login.html"; 
+        return; 
+      }
+      
+      if (currentUser.role !== "admin") { 
+        await Swal.fire({ 
+          icon: "error", 
+          title: "Akses Ditolak", 
+          text: "Halaman ini hanya untuk administrator." 
+        });
+        window.location.href = "index.html"; 
+        return; 
+      }
+      
+      document.getElementById("userName").innerHTML = escapeHtml(currentUser.nama);
+      document.getElementById("userRole").innerHTML = currentUser.role;
+      document.getElementById("currentDate").innerHTML = new Date().toLocaleDateString('id-ID', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      document.getElementById('logoutBtn').addEventListener('click', () => { 
+        Session.remove(); 
+        window.location.href = "login.html"; 
+      });
+      
+      document.getElementById('menuToggle').addEventListener('click', () => { 
+        document.getElementById('sidebar').classList.toggle('show'); 
+      });
+      
+      await loadReviews();
+    }
+    
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

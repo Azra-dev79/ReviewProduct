@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Upload/Edit Produk - Admin ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%); min-height: 100vh; }
+
+    /* Sidebar Styles */
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sidebar-brand { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-brand h3 { color: white; font-weight: 700; margin: 0; font-size: 1.4rem; }
+    .sidebar-brand p { color: #94a3b8; font-size: 0.75rem; margin: 0; }
+
+    .nav-sidebar { padding: 1rem 0; }
+    .nav-sidebar .nav-item { margin: 0.25rem 1rem; }
+    .nav-sidebar .nav-link {
+      color: #cbd5e1;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .nav-sidebar .nav-link i { width: 24px; margin-right: 12px; font-size: 1.1rem; }
+    .nav-sidebar .nav-link:hover { background: rgba(255,255,255,0.08); color: white; }
+    .nav-sidebar .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+    /* Main Content */
+    .main-content { padding: 1.5rem; }
+
+    .top-bar {
+      background: white;
+      border-radius: 24px;
+      padding: 0.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: white;
+      border-radius: 28px;
+      border: none;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .form-card-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .form-card-body {
+      padding: 2rem;
+    }
+
+    .form-modern {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .form-modern:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      outline: none;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+
+    .btn-modern {
+      border-radius: 30px;
+      padding: 0.7rem 2rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-primary-modern {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: none;
+      color: white;
+    }
+
+    .btn-primary-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -8px #2563eb;
+    }
+
+    .btn-outline-modern {
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      color: #475569;
+    }
+
+    .btn-outline-modern:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* Image Preview */
+    .image-preview-area {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1rem;
+      text-align: center;
+      border: 2px dashed #cbd5e1;
+      transition: all 0.2s;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+
+    /* Select2-like styling */
+    select.form-modern {
+      cursor: pointer;
+      background-color: white;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -280px; width: 280px; transition: left 0.3s ease; z-index: 1050; }
+      .sidebar.show { left: 0; }
+      .main-content { width: 100%; padding: 1rem; }
+      .menu-toggle { display: block; }
+      .form-card-body { padding: 1.5rem; }
+    }
+    @media (min-width: 769px) { .menu-toggle { display: none; } }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-auto sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <h3>⭐ ReviewProduct</h3>
+          <p>Admin Dashboard</p>
+        </div>
+        <div class="nav-sidebar">
+          <div class="nav-item"><a href="admin-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></div>
+          <div class="nav-item"><a href="admin-products.html" class="nav-link"><i class="fas fa-box"></i> Produk</a></div>
+          <div class="nav-item"><a href="admin-reviews.html" class="nav-link"><i class="fas fa-star"></i> Ulasan</a></div>
+          <div class="nav-item"><a href="admin-upload.html" class="nav-link active"><i class="fas fa-plus-circle"></i> Upload Produk</a></div>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.1); margin: 0 1rem;">
+          <div class="nav-item mt-3"><div class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div></div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col main-content">
+        <div class="top-bar d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <div><span class="fw-semibold" id="userName">Admin</span><small class="text-muted d-block" id="userRole"></small></div>
+          </div>
+          <div class="text-muted"><i class="fas fa-calendar-alt me-2"></i><span id="currentDate"></span></div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h2 class="fw-bold mb-1" id="formTitle"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Produk Baru</h2>
+                <p class="mb-0 opacity-75">Isi data produk dengan lengkap untuk tampilan terbaik</p>
+              </div>
+              <a href="admin-products.html" class="btn btn-light btn-sm rounded-pill">
+                <i class="fas fa-arrow-left me-1"></i> Kembali ke Produk
+              </a>
+            </div>
+          </div>
+          <div class="form-card-body">
+            <div id="formAlert"></div>
+            
+            <form id="productForm">
+              <input type="hidden" id="produkEditId" />
+              
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="form-label"><i class="fas fa-tag text-primary me-2"></i>Nama Produk *</label>
+                  <input type="text" id="namaProduk" class="form-control form-modern" placeholder="Contoh: MacBook Pro M4" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label"><i class="fas fa-building text-primary me-2"></i>Brand *</label>
+                  <input type="text" id="brandProduk" class="form-control form-modern" placeholder="Contoh: Apple, Samsung" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label"><i class="fas fa-layer-group text-primary me-2"></i>Kategori *</label>
+                  <select id="kategoriProduk" class="form-select form-modern" required>
+                    <option value="">Memuat kategori...</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label"><i class="fas fa-rupiah-sign text-primary me-2"></i>Harga (Rp) *</label>
+                  <input type="number" id="hargaProduk" class="form-control form-modern" placeholder="Contoh: 25000000" min="0" required />
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label"><i class="fas fa-image text-primary me-2"></i>URL Gambar Produk *</label>
+                  <input type="url" id="gambarProduk" class="form-control form-modern" placeholder="https://example.com/gambar.jpg" required />
+                  <div id="imagePreviewContainer" class="image-preview-area mt-3" style="display: none;">
+                    <img id="imagePreview" class="preview-img" alt="Preview Gambar" />
+                    <p class="text-muted small mt-2 mb-0">Preview gambar</p>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label"><i class="fas fa-align-left text-primary me-2"></i>Deskripsi *</label>
+                  <textarea id="deskripsiProduk" class="form-control form-modern" rows="6" placeholder="Tulis deskripsi produk secara detail... (fitur, spesifikasi, keunggulan)" required></textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label"><i class="fas fa-toggle-on text-primary me-2"></i>Status</label>
+                  <select id="statusProduk" class="form-select form-modern">
+                    <option value="Aktif">✅ Aktif</option>
+                    <option value="Nonaktif">❌ Nonaktif</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <hr class="my-2" />
+                  <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">
+                    <button type="button" class="btn btn-outline-modern btn-modern" onclick="resetForm()">
+                      <i class="fas fa-undo-alt me-2"></i> Reset
+                    </button>
+                    <button id="btnProduk" type="submit" class="btn btn-primary-modern btn-modern px-5">
+                      <i class="fas fa-save me-2"></i> Simpan Produk
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    let currentUser = null;
+    let isEditMode = false;
+    let kategoriData = [];
+
+    // Utility functions
+    function escapeHtml(text) { 
+      if (!text && text !== 0) return ''; 
+      const div = document.createElement('div'); 
+      div.textContent = text; 
+      return div.innerHTML; 
+    }
+
+    function getValue(id) { 
+      const el = document.getElementById(id); 
+      return el ? (el.value || "") : ""; 
+    }
+
+    function setValue(id, value) { 
+      const el = document.getElementById(id); 
+      if (el) el.value = value === null || value === undefined ? "" : String(value); 
+    }
+
+    function formatRupiah(amount) {
+      if (!amount && amount !== 0) return '';
+      return new Intl.NumberFormat('id-ID').format(amount);
+    }
+
+    // Form validation
+    function validateForm(data) {
+      if (!data.nama_produk.trim()) return "Nama produk wajib diisi.";
+      if (!data.kategori_id) return "Kategori wajib dipilih.";
+      if (!data.brand.trim()) return "Brand wajib diisi.";
+      if (data.harga === "" || data.harga === null || data.harga === undefined) return "Harga wajib diisi.";
+      if (isNaN(Number(data.harga)) || Number(data.harga) < 0) return "Harga harus berupa angka valid.";
+      if (!data.gambar.trim()) return "URL gambar wajib diisi.";
+      if (!data.deskripsi.trim()) return "Deskripsi wajib diisi.";
+      return "";
+    }
+
+    // Load categories
+    async function loadKategori() {
+      const select = document.getElementById("kategoriProduk");
+      if (!select) return;
+      
+      select.innerHTML = '<option value="">📂 Memuat kategori...</option>';
+      
+      try {
+        const result = await ApiService.getKategori();
+        kategoriData = Array.isArray(result) ? result : (result?.data || []);
+        
+        if (!kategoriData.length) {
+          select.innerHTML = '<option value="">⚠️ Belum ada kategori</option>';
+          const addCategoryBtn = confirm("Belum ada data kategori. Apakah Anda ingin menambah kategori sekarang?");
+          if (addCategoryBtn) {
+            window.location.href = "admin-categories.html";
+          }
+          return;
+        }
+        
+        renderKategoriOptions();
+      } catch (error) {
+        console.error("Load kategori error:", error);
+        kategoriData = [];
+        select.innerHTML = '<option value="">❌ Gagal memuat kategori</option>';
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal Memuat Kategori",
+          text: error.message || "Terjadi kesalahan saat memuat data kategori.",
+          confirmButtonColor: "#dc2626"
+        });
+      }
+    }
+
+    function renderKategoriOptions(selectedId = "") {
+      const select = document.getElementById("kategoriProduk");
+      if (!select || !kategoriData.length) return;
+      
+      select.innerHTML = '<option value="">-- Pilih Kategori --</option>' + 
+        kategoriData.map(kategori => {
+          const id = String(kategori.id || "");
+          const nama = String(kategori.nama_kategori || "-");
+          const selected = String(selectedId) === id ? "selected" : "";
+          return `<option value="${escapeHtml(id)}" ${selected}>📁 ${escapeHtml(nama)}</option>`;
+        }).join("");
+    }
+
+    // Check edit mode from URL
+    async function checkEditMode() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      
+      if (!id) {
+        isEditMode = false;
+        setPageMode(false);
+        return;
+      }
+      
+      isEditMode = true;
+      setPageMode(true);
+      setFormDisabled(true);
+      
+      try {
+        const produk = await ApiService.getProdukById(id);
+        
+        if (!produk || !produk.id) {
+          await Swal.fire({
+            icon: "warning",
+            title: "Produk Tidak Ditemukan",
+            text: "Produk yang ingin diedit tidak ditemukan.",
+            confirmButtonColor: "#f59e0b"
+          });
+          window.location.href = "admin-upload.html";
+          return;
+        }
+        
+        // Fill form with product data
+        setValue("produkEditId", produk.id);
+        setValue("namaProduk", produk.nama_produk);
+        setValue("brandProduk", produk.brand);
+        setValue("hargaProduk", produk.harga);
+        setValue("gambarProduk", produk.gambar);
+        setValue("deskripsiProduk", produk.deskripsi);
+        setValue("statusProduk", produk.status || "Aktif");
+        
+        // Set kategori
+        renderKategoriOptions(produk.kategori_id);
+        
+        // Trigger image preview
+        const gambarInput = document.getElementById("gambarProduk");
+        if (gambarInput) gambarInput.dispatchEvent(new Event('input'));
+        
+      } catch (error) {
+        console.error("Check edit mode error:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal Memuat Data",
+          text: error.message || "Terjadi kesalahan saat memuat data produk.",
+          confirmButtonColor: "#dc2626"
+        });
+        window.location.href = "admin-upload.html";
+      } finally {
+        setFormDisabled(false);
+      }
+    }
+
+    // Save product (create or update)
+    async function simpanProduk(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById("btnProduk");
+      if (!btn) return;
+      
+      const data = {
+        id: getValue("produkEditId"),
+        kategori_id: getValue("kategoriProduk").trim(),
+        nama_produk: getValue("namaProduk").trim(),
+        brand: getValue("brandProduk").trim(),
+        harga: parseInt(getValue("hargaProduk")) || 0,
+        gambar: getValue("gambarProduk").trim(),
+        deskripsi: getValue("deskripsiProduk").trim(),
+        status: getValue("statusProduk") || "Aktif",
+      };
+      
+      const errorMessage = validateForm(data);
+      if (errorMessage) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Validasi Gagal",
+          text: errorMessage,
+          confirmButtonColor: "#f59e0b"
+        });
+        return;
+      }
+      
+      if (isEditMode && !data.id) {
+        await Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "ID produk tidak ditemukan.",
+          confirmButtonColor: "#dc2626"
+        });
+        return;
+      }
+      
+      // Show loading
+      const originalBtnText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Memproses...';
+      setFormDisabled(true);
+      
+      try {
+        let result;
+        if (isEditMode) {
+          result = await ApiService.updateProduk(data);
+        } else {
+          result = await ApiService.tambahProduk(data);
+        }
+        
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: result.message || (isEditMode ? "Produk berhasil diperbarui!" : "Produk berhasil ditambahkan!"),
+          confirmButtonColor: "#2563eb",
+          confirmButtonText: "OK",
+          timer: 2000
+        });
+        
+        // Redirect to products list
+        window.location.href = "admin-products.html";
+        
+      } catch (error) {
+        console.error("Simpan produk error:", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal Menyimpan",
+          text: error.message || "Terjadi kesalahan saat menyimpan data. Silakan coba lagi.",
+          confirmButtonColor: "#dc2626"
+        });
+        setFormDisabled(false);
+        btn.disabled = false;
+        btn.innerHTML = originalBtnText;
+      }
+    }
+
+    // Reset form
+    function resetForm() {
+      Swal.fire({
+        title: "Reset Form?",
+        text: "Semua data yang belum disimpan akan hilang.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#f59e0b",
+        cancelButtonColor: "#64748b",
+        confirmButtonText: "Ya, Reset!",
+        cancelButtonText: "Batal"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (isEditMode) {
+            // Reload product data
+            checkEditMode();
+          } else {
+            // Clear form
+            document.getElementById("productForm").reset();
+            setValue("produkEditId", "");
+            const previewContainer = document.getElementById("imagePreviewContainer");
+            previewContainer.style.display = "none";
+          }
+          
+          Swal.fire({
+            icon: "success",
+            title: "Form Direset",
+            text: "Form telah dikosongkan.",
+            timer: 1500,
+            showConfirmButton: false
+          });
+        }
+      });
+    }
+
+    // Set page mode (create or edit)
+    function setPageMode(editMode) {
+      const title = document.getElementById("formTitle");
+      const pageTitle = document.querySelector("title");
+      
+      if (editMode) {
+        if (title) title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Produk';
+        if (pageTitle) pageTitle.innerText = "Edit Produk - ReviewProduct";
+      } else {
+        if (title) title.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i>Upload Produk Baru';
+        if (pageTitle) pageTitle.innerText = "Upload Produk - ReviewProduct";
+      }
+    }
+
+    function setFormDisabled(disabled) {
+      const fields = ["namaProduk", "kategoriProduk", "brandProduk", "hargaProduk", "gambarProduk", "deskripsiProduk", "statusProduk"];
+      fields.forEach(id => {
+        const field = document.getElementById(id);
+        if (field) field.disabled = disabled;
+      });
+    }
+
+    // Image preview
+    function initImagePreview() {
+      const gambarInput = document.getElementById("gambarProduk");
+      if (!gambarInput) return;
+      
+      gambarInput.addEventListener("input", function() {
+        const url = this.value.trim();
+        const previewContainer = document.getElementById("imagePreviewContainer");
+        const previewImg = document.getElementById("imagePreview");
+        
+        if (url && (url.startsWith("http") || url.startsWith("https"))) {
+          previewContainer.style.display = "block";
+          previewImg.src = url;
+          previewImg.onerror = () => {
+            previewImg.src = "https://placehold.co/600x400/e2e8f0/64748b?text=Invalid+Image+URL";
+          };
+        } else {
+          previewContainer.style.display = "none";
+          previewImg.src = "";
+        }
+      });
+    }
+
+    // Initialize page
+    async function init() {
+      // Check login
+      currentUser = Session.get();
+      if (!currentUser) { 
+        window.location.href = "login.html"; 
+        return; 
+      }
+      
+      if (currentUser.role !== "admin") { 
+        await Swal.fire({ 
+          icon: "error", 
+          title: "Akses Ditolak", 
+          text: "Halaman ini hanya untuk administrator.",
+          confirmButtonColor: "#dc2626"
+        });
+        window.location.href = "index.html"; 
+        return; 
+      }
+      
+      // Set user info
+      document.getElementById("userName").innerHTML = escapeHtml(currentUser.nama);
+      document.getElementById("userRole").innerHTML = currentUser.role;
+      document.getElementById("currentDate").innerHTML = new Date().toLocaleDateString('id-ID', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      // Event listeners
+      document.getElementById('logoutBtn').addEventListener('click', () => { 
+        Session.remove(); 
+        window.location.href = "login.html"; 
+      });
+      
+      document.getElementById('menuToggle').addEventListener('click', () => { 
+        document.getElementById('sidebar').classList.toggle('show'); 
+      });
+      
+      document.getElementById("productForm").addEventListener("submit", simpanProduk);
+      
+      // Initialize image preview
+      initImagePreview();
+      
+      // Load categories
+      await loadKategori();
+      
+      // Check if editing
+      await checkEditMode();
+    }
+    
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Beri Review - ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%);
+      min-height: 100vh;
+    }
+
+    /* Modern Form Card */
+    .review-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(2px);
+      border-radius: 40px !important;
+      border: none;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .review-card:hover {
+      box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.18);
+    }
+
+    .form-modern {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+
+    .form-modern:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      outline: none;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+      letter-spacing: -0.2px;
+    }
+
+    .btn-modern {
+      border-radius: 40px;
+      padding: 0.7rem 1.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary-modern {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: none;
+      color: white;
+    }
+
+    .btn-primary-modern:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      box-shadow: 0 12px 20px -10px rgba(15, 23, 42, 0.4);
+    }
+
+    /* Rating Picker Modern */
+    .rating-picker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      padding: 0.6rem 1.2rem;
+      border-radius: 60px;
+      border: 1.5px solid #e2e8f0;
+      width: fit-content;
+    }
+
+    .rating-star {
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      padding: 0 4px;
+    }
+
+    .rating-star i {
+      pointer-events: none;
+    }
+
+    .rating-star:hover {
+      transform: scale(1.1);
+      color: #fbbf24;
+    }
+
+    .rating-star.active {
+      color: #fbbf24;
+    }
+
+    .rating-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #475569;
+      margin-left: 8px;
+      padding-left: 8px;
+      border-left: 1.5px solid #e2e8f0;
+    }
+
+    /* Selected Product Card */
+    .selected-product-card {
+      background: linear-gradient(135deg, #fefefe, #ffffff);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid #f0f2f5;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+    }
+
+    .selected-product-image {
+      width: 100%;
+      height: 100%;
+      min-height: 160px;
+      object-fit: cover;
+    }
+
+    .star-rating {
+      color: #fbbf24;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+    }
+
+    .badge-modern {
+      background: #eef2ff;
+      color: #1e40af;
+      border-radius: 40px;
+      padding: 0.3rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .review-card .card-body {
+        padding: 1.5rem !important;
+      }
+
+      .selected-product-image {
+        min-height: 140px;
+        max-height: 180px;
+      }
+
+      .rating-picker {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navbarApp"></div>
+
+  <main class="container py-4 py-lg-5 px-3 px-lg-4">
+    <div class="review-card card">
+      <div class="card-body p-4 p-md-5">
+        <!-- Header -->
+        <div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom border-light">
+          <div class="badge-modern d-inline-flex align-items-center gap-2">
+            <i class="fas fa-star-of-life"></i> Form Review
+          </div>
+          <h2 class="fw-bold mb-0" style="font-size: 1.8rem; background: linear-gradient(135deg, #0f172a, #2d3a5e); background-clip: text; -webkit-background-clip: text; color: transparent;">
+            Beri Rating & Review
+          </h2>
+        </div>
+
+        <div id="selectedProductInfo"></div>
+
+        <form id="reviewForm" class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-box-open me-2 text-primary"></i>Pilih Produk</label>
+            <select id="produkId" class="form-select form-modern" required>
+              <option value="">Memuat produk...</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-user me-2 text-primary"></i>Nama Reviewer</label>
+            <input type="text" id="namaReviewer" class="form-control form-modern" placeholder="Contoh: Ahmad Fauzi" required />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-envelope me-2 text-primary"></i>Email</label>
+            <input type="email" id="emailReviewer" class="form-control form-modern" placeholder="email@contoh.com" required />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-star me-2 text-primary"></i>Rating</label>
+            <div id="ratingPicker" class="rating-picker" role="radiogroup">
+              <button type="button" class="rating-star" data-rating="1" aria-label="1 bintang"><i class="fas fa-star"></i></button>
+              <button type="button" class="rating-star" data-rating="2" aria-label="2 bintang"><i class="fas fa-star"></i></button>
+              <button type="button" class="rating-star" data-rating="3" aria-label="3 bintang"><i class="fas fa-star"></i></button>
+              <button type="button" class="rating-star" data-rating="4" aria-label="4 bintang"><i class="fas fa-star"></i></button>
+              <button type="button" class="rating-star" data-rating="5" aria-label="5 bintang"><i class="fas fa-star"></i></button>
+              <span id="ratingText" class="rating-text">Pilih rating</span>
+            </div>
+            <input type="hidden" id="rating" required />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label"><i class="fas fa-heading me-2 text-primary"></i>Judul Review</label>
+            <input type="text" id="judulReview" class="form-control form-modern" placeholder="Ringkasan pengalaman Anda" required />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label"><i class="fas fa-comment-dots me-2 text-primary"></i>Isi Review</label>
+            <textarea id="isiReview" class="form-control form-modern" rows="5" placeholder="Ceritakan pengalaman, kelebihan, atau kekurangan produk..." required></textarea>
+          </div>
+
+          <div class="col-12 mt-3">
+            <button id="btnReview" type="submit" class="btn btn-primary-modern btn-modern px-5">
+              <i class="fas fa-paper-plane me-2"></i> Kirim Review
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const user = Session.get();
+
+  console.log("User:", user);
+
+  if (!user) {
+
+    Swal.fire({
+      icon: "warning",
+      title: "Perhatian",
+      text: "Anda harus login terlebih dahulu untuk mengakses halaman ini.",
+      confirmButtonColor: "#f59e0b",
+      confirmButtonText: "Login Sekarang"
+    }).then(() => {
+      window.location.href = "login.html";
+    });
+
+    return;
+  }
+
+});
+  </script>
+
+
+  <script>
+    let produkData = [];
+    let initialProdukId = "";
+
+    document.addEventListener("DOMContentLoaded", initReviewPage);
+
+    async function initReviewPage() {
+      ensureSwalFallback();
+
+      const params = new URLSearchParams(window.location.search);
+      initialProdukId = params.get("produk_id") || "";
+
+      setupRatingPicker();
+
+      const reviewForm = document.getElementById("reviewForm");
+      const produkSelect = document.getElementById("produkId");
+
+      if (reviewForm) reviewForm.addEventListener("submit", tambahReview);
+      if (produkSelect) {
+        produkSelect.addEventListener("change", async function() {
+          const produkId = this.value;
+          if (!produkId) {
+            clearSelectedProductInfo();
+            return;
+          }
+          await renderSelectedById(produkId);
+        });
+      }
+
+      await loadProdukOptions(initialProdukId);
+    }
+
+    async function loadProdukOptions(selectedId = "") {
+      const select = document.getElementById("produkId");
+      if (!select) return;
+      try {
+        select.disabled = true;
+        select.innerHTML = '<option value="">Memuat produk...</option>';
+        const response = await ApiService.getProduk(1, 1000);
+        produkData = normalizeProdukResponse(response);
+        if (!produkData.length) {
+          select.innerHTML = '<option value="">Belum ada produk</option>';
+          clearSelectedProductInfo();
+          await showWarning("Belum ada produk yang bisa direview.");
+          return;
+        }
+        select.innerHTML = '<option value="">Pilih Produk</option>' + produkData.map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.nama_produk || "-")}</option>`).join("");
+        if (selectedId) {
+          select.value = selectedId;
+          if (!select.value) {
+            const produkDetail = await ApiService.getProdukById(selectedId);
+            if (produkDetail) {
+              produkData.push(produkDetail);
+              select.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(produkDetail.id)}" selected>${escapeHtml(produkDetail.nama_produk || "-")}</option>`);
+              select.value = String(produkDetail.id);
+            }
+          }
+        }
+        select.disabled = false;
+        await renderSelectedById(select.value);
+      } catch (error) {
+        console.error("Load produk options error:", error);
+        select.disabled = false;
+        select.innerHTML = '<option value="">Gagal memuat produk</option>';
+        clearSelectedProductInfo();
+        await showError(error.message || "Gagal memuat produk.");
+      }
+    }
+
+    function normalizeProdukResponse(response) {
+      if (Array.isArray(response)) return response;
+      if (response && Array.isArray(response.items)) return response.items;
+      if (response && response.data && Array.isArray(response.data.items)) return response.data.items;
+      if (response && Array.isArray(response.data)) return response.data;
+      return [];
+    }
+
+    function setupRatingPicker() {
+      const picker = document.getElementById("ratingPicker");
+      if (!picker) return;
+      picker.querySelectorAll(".rating-star").forEach(button => {
+        button.addEventListener("click", function() {
+          setRating(this.dataset.rating);
+        });
+      });
+    }
+
+    function setRating(value) {
+      const ratingInput = document.getElementById("rating");
+      const ratingText = document.getElementById("ratingText");
+      const rating = Number(value || 0);
+      if (ratingInput) ratingInput.value = rating > 0 ? String(rating) : "";
+      document.querySelectorAll(".rating-star").forEach(button => {
+        const buttonRating = Number(button.dataset.rating || 0);
+        button.classList.toggle("active", buttonRating <= rating);
+        button.setAttribute("aria-checked", buttonRating === rating ? "true" : "false");
+      });
+      if (ratingText) ratingText.innerText = rating > 0 ? `${rating} dari 5` : "Pilih rating";
+    }
+
+    async function renderSelectedById(produkId) {
+      if (!produkId) {
+        clearSelectedProductInfo();
+        return;
+      }
+      let produk = produkData.find(item => String(item.id) === String(produkId));
+      if (!produk) {
+        try {
+          produk = await ApiService.getProdukById(produkId);
+          if (produk) produkData.push(produk);
+        } catch (error) {
+          console.error("Get produk detail error:", error);
+          await showError(error.message || "Gagal memuat detail produk.");
+        }
+      }
+      if (produk) renderSelectedProductInfo(produk);
+      else clearSelectedProductInfo();
+    }
+
+    function renderSelectedProductInfo(produk) {
+      const container = document.getElementById("selectedProductInfo");
+      if (!container) return;
+      const rating = Number(produk.rating_rata_rata || 0);
+      const totalReview = Number(produk.total_review || 0);
+      const image = produk.gambar && produk.gambar.trim() !== "" ? produk.gambar : "https://placehold.co/600x400?text=No+Image";
+      const kategoriIcon = (produk.kategori_detail?.icon) || "fa-tag";
+      const kategoriNama = produk.kategori || produk.kategori_detail?.nama_kategori || "-";
+      container.innerHTML = `
+        <div class="selected-product-card mb-4">
+          <div class="row g-0">
+            <div class="col-md-3">
+              <img src="${escapeHtml(image)}" class="selected-product-image w-100" alt="${escapeHtml(produk.nama_produk || "Produk")}" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+            </div>
+            <div class="col-md-9">
+              <div class="p-4">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                  <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2"><i class="fas ${escapeHtml(kategoriIcon)} me-1"></i> ${escapeHtml(kategoriNama)}</span>
+                  <span class="text-muted small"><i class="fas fa-building me-1"></i> ${escapeHtml(produk.brand || "-")}</span>
+                </div>
+                <h4 class="fw-bold mb-2">${escapeHtml(produk.nama_produk || "-")}</h4>
+                <p class="text-secondary small mb-3 line-clamp-2">${escapeHtml(produk.deskripsi?.substring(0, 120) || "-")}${produk.deskripsi?.length > 120 ? "..." : ""}</p>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                  <div class="fw-bold text-primary fs-5">${formatRupiah(produk.harga)}</div>
+                  <div class="star-rating">${renderStars(rating)}</div>
+                  <small class="text-muted">Rating ${rating.toFixed(1)} dari ${totalReview} ulasan</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function clearSelectedProductInfo() {
+      const container = document.getElementById("selectedProductInfo");
+      if (container) container.innerHTML = "";
+    }
+
+    async function tambahReview(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnReview");
+      const form = document.getElementById("reviewForm");
+      if (!btn || !form) return;
+      const selectedProdukId = getValue("produkId");
+      const data = {
+        produk_id: selectedProdukId,
+        nama_reviewer: getValue("namaReviewer").trim(),
+        email: getValue("emailReviewer").trim(),
+        rating: getValue("rating"),
+        judul_review: getValue("judulReview").trim(),
+        isi_review: getValue("isiReview").trim(),
+      };
+      const errorMessage = validateReviewForm(data);
+      if (errorMessage) {
+        await showWarning(errorMessage);
+        return;
+      }
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Mengirim...`;
+      showLoadingAlert("Mengirim review...");
+      try {
+        const result = await ApiService.tambahReview(data);
+        closeLoadingAlert();
+        await showSuccess(result.message || "Review berhasil dikirim.");
+        form.reset();
+        setRating("");
+        const keepProdukId = initialProdukId || selectedProdukId;
+        await loadProdukOptions(keepProdukId);
+      } catch (error) {
+        console.error("Tambah review error:", error);
+        closeLoadingAlert();
+        await showError(error.message || "Gagal terhubung ke server.");
+      }
+      resetButton(btn);
+    }
+
+    function validateReviewForm(data) {
+      if (!data.produk_id) return "Silakan pilih produk terlebih dahulu.";
+      if (!data.nama_reviewer) return "Nama reviewer wajib diisi.";
+      if (!data.email) return "Email wajib diisi.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return "Format email tidak valid.";
+      if (!data.rating) return "Silakan pilih rating bintang terlebih dahulu.";
+      if (!data.judul_review) return "Judul review wajib diisi.";
+      if (!data.isi_review) return "Isi review wajib diisi.";
+      return "";
+    }
+
+    function resetButton(btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-paper-plane me-2"></i> Kirim Review`;
+    }
+
+    function getValue(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "") : "";
+    }
+
+    function ensureSwalFallback() {
+      if (typeof Swal !== "undefined") return;
+      window.Swal = {
+        fire: (options) => { window.alert(options.text || options.title || "Terjadi kesalahan"); return Promise.resolve(); },
+        close: () => {},
+        showLoading: () => {},
+      };
+    }
+
+    function showSuccess(message) {
+      return Swal.fire({ icon: "success", title: "Berhasil", text: message, confirmButtonColor: "#0f172a", confirmButtonText: "OK", borderRadius: "24px" });
+    }
+    function showError(message) {
+      return Swal.fire({ icon: "error", title: "Gagal", text: message, confirmButtonColor: "#dc2626", confirmButtonText: "Tutup", borderRadius: "24px" });
+    }
+    function showWarning(message) {
+      return Swal.fire({ icon: "warning", title: "Perhatian", text: message, confirmButtonColor: "#f59e0b", confirmButtonText: "Mengerti", borderRadius: "24px" });
+    }
+    function showLoadingAlert(title = "Memproses...") {
+      Swal.fire({ title, allowOutsideClick: false, allowEscapeKey: false, didOpen: () => Swal.showLoading(), background: "#ffffff", borderRadius: "28px" });
+    }
+    function closeLoadingAlert() { Swal.close(); }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

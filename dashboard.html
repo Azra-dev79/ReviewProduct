@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Dashboard Admin - ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-brand h3 {
+      color: white;
+      font-weight: 700;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .sidebar-brand p {
+      color: #94a3b8;
+      font-size: 0.75rem;
+      margin: 0;
+    }
+
+    .nav-sidebar {
+      padding: 1rem 0;
+    }
+
+    .nav-sidebar .nav-item {
+      margin: 0.25rem 1rem;
+    }
+
+    .nav-sidebar .nav-link {
+      color: #cbd5e1;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .nav-sidebar .nav-link i {
+      width: 24px;
+      margin-right: 12px;
+      font-size: 1.1rem;
+    }
+
+    .nav-sidebar .nav-link:hover {
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
+
+    .nav-sidebar .nav-link.active {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+
+    .main-content {
+      padding: 1.5rem;
+    }
+
+    .top-bar {
+      background: white;
+      border-radius: 24px;
+      padding: 0.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 28px;
+      padding: 1.5rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: rgba(37, 99, 235, 0.15);
+      border-radius: 50%;
+    }
+
+    .stat-dashboard-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+      border: 1px solid #f0f2f5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .stat-icon-circle {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #1e40af;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .chart-container {
+      background: white;
+      border-radius: 24px;
+      padding: 1.25rem;
+      border: 1px solid #f0f2f5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .chart-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .category-name {
+      font-weight: 500;
+      color: #334155;
+    }
+
+    .category-count {
+      font-weight: 700;
+      color: #2563eb;
+      background: #eef2ff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .progress-custom {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-bar-custom {
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      height: 100%;
+      border-radius: 10px;
+    }
+
+    .popular-product-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .popular-product-info {
+      flex: 1;
+    }
+
+    .popular-product-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #0f172a;
+    }
+
+    .popular-product-brand {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .popular-product-rating {
+      font-size: 0.7rem;
+      color: #f59e0b;
+    }
+
+    .popular-product-review {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      border: 1px solid #f0f2f5;
+    }
+
+    .table-modern {
+      margin-bottom: 0;
+    }
+
+    .table-modern thead th {
+      background: #f8fafc;
+      padding: 0.9rem 1rem;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #1e293b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table-modern tbody td {
+      padding: 0.9rem 1rem;
+      vertical-align: middle;
+      color: #334155;
+      font-size: 0.85rem;
+    }
+
+    .badge-status {
+      padding: 0.25rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+
+    .badge-active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-inactive {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .action-btn {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      border: none;
+      background: transparent;
+    }
+
+    .action-btn-edit { color: #2563eb; }
+    .action-btn-edit:hover { background: #eef2ff; }
+    .action-btn-delete { color: #dc2626; }
+    .action-btn-delete:hover { background: #fef2f2; }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background: #f8fafc;
+      border-radius: 24px;
+    }
+
+    .page-loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+
+    .star-rating {
+      color: #fbbf24;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+    }
+
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #d97706;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        width: 280px;
+        transition: left 0.3s ease;
+        z-index: 1050;
+      }
+      .sidebar.show { left: 0; }
+      .main-content { width: 100%; padding: 1rem; }
+      .menu-toggle { display: block; }
+    }
+
+    @media (min-width: 769px) {
+      .menu-toggle { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <div class="col-auto sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <h3>⭐ ReviewProduct</h3>
+          <p>Admin Dashboard</p>
+        </div>
+        <div class="nav-sidebar">
+          <div class="nav-item">
+            <div class="nav-link active" data-page="dashboard">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-link" data-page="products">
+              <i class="fas fa-box"></i> Produk
+            </div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-link" data-page="reviews">
+              <i class="fas fa-star"></i> Ulasan
+            </div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-link" data-page="upload">
+              <i class="fas fa-plus-circle"></i> Upload Produk
+            </div>
+          </div>
+          <hr class="my-3" style="border-color: rgba(255,255,255,0.1); margin: 0 1rem;">
+          <div class="nav-item mt-3">
+            <div class="nav-link" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col main-content">
+        <div class="top-bar d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light menu-toggle" id="menuToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div>
+              <span class="fw-semibold" id="userName">Admin</span>
+              <small class="text-muted d-block" id="userRole"></small>
+            </div>
+          </div>
+          <div class="text-muted">
+            <i class="fas fa-calendar-alt me-2"></i>
+            <span id="currentDate"></span>
+          </div>
+        </div>
+
+        <div id="pageContent">
+          <div class="page-loader">
+            <div class="text-center">
+              <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+              <p class="text-muted">Memuat halaman...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // ==================== STATE & GLOBAL VARIABLES ====================
+    let currentUser = null;
+    let currentPage = 'dashboard';
+    let cachedProducts = null;
+    let cachedReviews = null;
+    let cachedDashboard = null;
+
+    // ==================== HELPER FUNCTIONS ====================
+    function escapeHtml(text) {
+      if (!text && text !== 0) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatRupiah(amount) {
+      if (!amount && amount !== 0) return '-';
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+    }
+
+    function renderStars(rating) {
+      const numRating = Number(rating) || 0;
+      const fullStars = Math.floor(numRating);
+      const halfStar = numRating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      let stars = '';
+      for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
+      if (halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+      for (let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star"></i>';
+      return stars;
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    // ==================== API DATA FETCHING ====================
+    async function fetchDashboardData() {
+      if (cachedDashboard) return cachedDashboard;
+      try {
+        console.log("Fetching dashboard data...");
+        const response = await ApiService.getDashboard();
+        console.log("Dashboard response:", response);
+        
+        // Handle response dengan berbagai kemungkinan struktur
+        let dashboardData = null;
+        
+        if (response && response.success === true && response.data) {
+          dashboardData = response.data;
+          console.log("Dashboard data loaded successfully:", dashboardData);
+        } else if (response && response.data && !response.success) {
+          // Jika success tidak ada tapi data ada
+          dashboardData = response.data;
+          console.log("Dashboard data loaded (without success flag):", dashboardData);
+        } else if (response && !response.data && response.success) {
+          // Jika data langsung di response
+          dashboardData = response;
+          console.log("Dashboard data loaded (direct):", dashboardData);
+        } else {
+          console.error("Invalid dashboard response structure:", response);
+          return null;
+        }
+        
+        cachedDashboard = dashboardData;
+        return dashboardData;
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        return null;
+      }
+    }
+
+    async function fetchAllProducts() {
+      if (cachedProducts) return cachedProducts;
+      try {
+        const response = await ApiService.getProduk(1, 100);
+        cachedProducts = (response && Array.isArray(response.items)) ? response.items : [];
+        return cachedProducts;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        return [];
+      }
+    }
+
+    async function fetchAllReviews() {
+      if (cachedReviews) return cachedReviews;
+      try {
+        const dashboardData = await fetchDashboardData();
+        if (dashboardData && dashboardData.review_terbaru && dashboardData.review_terbaru.length > 0) {
+          cachedReviews = dashboardData.review_terbaru;
+          return cachedReviews;
+        }
+        
+        const products = await fetchAllProducts();
+        const allReviewsList = [];
+        for (const product of products.slice(0, 30)) {
+          try {
+            const productDetail = await ApiService.getProdukById(product.id);
+            if (productDetail && Array.isArray(productDetail.reviews)) {
+              productDetail.reviews.forEach(review => {
+                allReviewsList.push({
+                  ...review,
+                  produk_nama: product.nama_produk,
+                  produk_id: product.id
+                });
+              });
+            }
+          } catch (e) {
+            console.error("Error loading reviews for product", product.id);
+          }
+        }
+        cachedReviews = allReviewsList.sort((a, b) => {
+          const dateA = a.tanggal || a.created_at || "";
+          const dateB = b.tanggal || b.created_at || "";
+          return dateB.localeCompare(dateA);
+        });
+        return cachedReviews;
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        return [];
+      }
+    }
+
+    function clearCache() {
+      cachedProducts = null;
+      cachedReviews = null;
+      cachedDashboard = null;
+    }
+
+    // ==================== DASHBOARD PAGE RENDERER ====================
+    async function renderDashboardPage() {
+      const dashboardData = await fetchDashboardData();
+      
+      console.log("Rendering dashboard with data:", dashboardData);
+      
+      if (!dashboardData) {
+        return `
+          <div class="empty-state">
+            <i class="fas fa-chart-line fa-2x text-danger mb-3 d-block"></i>
+            <h5 class="text-danger">Gagal Memuat Data Dashboard</h5>
+            <p class="text-muted">Tidak dapat mengambil data dari server. Silakan periksa koneksi Anda.</p>
+            <button class="btn btn-primary rounded-pill mt-2" onclick="location.reload()">
+              <i class="fas fa-sync-alt me-2"></i>Coba Lagi
+            </button>
+          </div>
+        `;
+      }
+
+      const total_produk = dashboardData.total_produk || 0;
+      const total_kategori = dashboardData.total_kategori || 0;
+      const total_review = dashboardData.total_review || 0;
+      const rating_rata_rata = dashboardData.rating_rata_rata || 0;
+      const produk_terpopuler = dashboardData.produk_terpopuler || [];
+      const statistik_kategori = dashboardData.statistik_kategori || [];
+      const review_terbaru = dashboardData.review_terbaru || [];
+
+      const maxProduk = Math.max(...statistik_kategori.map(k => k.total_produk), 1);
+
+      return `
+        <div class="welcome-card">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <h1 class="welcome-title" style="font-size:1.8rem;">Selamat Datang, ${escapeHtml(currentUser.nama)}</h1>
+              <p class="welcome-subtitle">Anda login sebagai <strong>${escapeHtml(currentUser.role)}</strong> | Kelola produk dan review dengan mudah</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="stat-dashboard-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-number">${total_produk.toLocaleString()}</div>
+                  <div class="stat-label mt-1">Total Produk</div>
+                </div>
+                <div class="stat-icon-circle" style="background: linear-gradient(135deg, #2563eb15, #2563eb08); color:#2563eb;">
+                  <i class="fas fa-box-open"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="stat-dashboard-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-number">${total_kategori.toLocaleString()}</div>
+                  <div class="stat-label mt-1">Total Kategori</div>
+                </div>
+                <div class="stat-icon-circle" style="background: linear-gradient(135deg, #10b98115, #10b98108); color:#10b981;">
+                  <i class="fas fa-tags"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="stat-dashboard-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-number">${total_review.toLocaleString()}</div>
+                  <div class="stat-label mt-1">Total Ulasan</div>
+                </div>
+                <div class="stat-icon-circle" style="background: linear-gradient(135deg, #8b5cf615, #8b5cf608); color:#8b5cf6;">
+                  <i class="fas fa-comments"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="stat-dashboard-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="stat-number">${rating_rata_rata}</div>
+                  <div class="stat-label mt-1">Rating Rata-rata</div>
+                </div>
+                <div class="stat-icon-circle" style="background: linear-gradient(135deg, #f59e0b15, #f59e0b08); color:#f59e0b;">
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <div class="chart-title">
+                <i class="fas fa-chart-pie text-primary"></i> Statistik per Kategori
+              </div>
+              ${statistik_kategori.length > 0 ? statistik_kategori.map(cat => `
+                <div class="category-item">
+                  <div style="flex:1">
+                    <span class="category-name">${escapeHtml(cat.nama_kategori)}</span>
+                    <div class="progress-custom">
+                      <div class="progress-bar-custom" style="width: ${(cat.total_produk / maxProduk) * 100}%"></div>
+                    </div>
+                  </div>
+                  <span class="category-count ms-3">${cat.total_produk} produk</span>
+                </div>
+              `).join('') : '<div class="empty-state py-3"><p class="text-muted mb-0">Belum ada data kategori</p></div>'}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <div class="chart-title">
+                <i class="fas fa-fire text-primary"></i> Produk Terpopuler
+              </div>
+              ${produk_terpopuler.length > 0 ? produk_terpopuler.slice(0, 5).map(product => `
+                <div class="popular-product-item">
+                  <div class="popular-product-info">
+                    <div class="popular-product-name">${escapeHtml(product.nama_produk)}</div>
+                    <div class="popular-product-brand">${escapeHtml(product.brand || '-')}</div>
+                    <div class="popular-product-rating mt-1">
+                      ${renderStars(Number(product.rating || 0))} 
+                      <span class="ms-1">(${Number(product.rating || 0).toFixed(1)})</span>
+                    </div>
+                    <div class="popular-product-review">
+                      <i class="far fa-comment-dots me-1"></i>${product.total_review || 0} ulasan
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    ${product.total_review > 0 ? 
+                      `<span class="rating-badge"><i class="fas fa-star"></i> ${Number(product.rating || 0).toFixed(1)}</span>` : 
+                      `<span class="badge bg-secondary">Belum review</span>`
+                    }
+                  </div>
+                </div>
+              `).join('') : '<div class="empty-state py-3"><p class="text-muted mb-0">Belum ada data produk populer</p></div>'}
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <h3 class="fw-bold fs-5 m-0">
+            <i class="fas fa-star text-primary me-2"></i>Ulasan Terbaru
+          </h3>
+          <button onclick="loadPage('reviews')" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+            Lihat Semua <i class="fas fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+        <div class="table-container">
+          ${review_terbaru.length > 0 ? renderReviewsTable(review_terbaru) : 
+            '<div class="empty-state"><i class="fas fa-comment-dots fa-2x text-muted mb-2 d-block"></i><p class="text-muted mb-0">Belum ada ulasan</p></div>'}
+        </div>
+      `;
+    }
+
+    // ==================== TABLE RENDERERS ====================
+    function renderProductsTable(products) {
+      if (!products.length) {
+        return `<div class="empty-state"><i class="fas fa-box-open fa-2x text-muted mb-2 d-block"></i><p class="text-muted mb-0">Belum ada produk</p></div>`;
+      }
+
+      return `
+        <table class="table table-modern">
+          <thead>
+            <tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Rating</th><th>Status</th><th>Aksi</th></tr>
+          </thead>
+          <tbody>
+            ${products.map(product => `
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <img src="${escapeHtml(product.gambar || 'https://placehold.co/40x40')}" style="width:40px;height:40px;object-fit:cover;border-radius:12px;" onerror="this.src='https://placehold.co/40x40'">
+                    <div>
+                      <div class="fw-semibold">${escapeHtml(product.nama_produk)}</div>
+                      <small class="text-muted">${escapeHtml(product.brand || '-')}</small>
+                    </div>
+                  </div>
+                </div>
+                <td>${escapeHtml(product.kategori || '-')}</div>
+                <td class="fw-semibold text-primary">${formatRupiah(product.harga)}</div>
+                <td>
+                  <div class="star-rating small">${renderStars(Number(product.rating_rata_rata || 0))}</div>
+                  <small class="text-muted">${(Number(product.rating_rata_rata || 0)).toFixed(1)}</small>
+                </div>
+                <td>
+                  <span class="badge-status ${product.status === 'Aktif' ? 'badge-active' : 'badge-inactive'}">
+                    ${escapeHtml(product.status || 'Aktif')}
+                  </span>
+                </div>
+                <td>
+                  <a href="upload.html?id=${encodeURIComponent(product.id)}" class="action-btn action-btn-edit" title="Edit"><i class="fas fa-edit"></i></a>
+                  <button onclick="deleteProductHandler('${product.id}')" class="action-btn action-btn-delete" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </tr>
+            `).join('')}
+          </tbody>
+        <table>
+      `;
+    }
+
+    function renderReviewsTable(reviews) {
+      if (!reviews.length) {
+        return `<div class="empty-state"><i class="fas fa-comment-dots fa-2x text-muted mb-2 d-block"></i><p class="text-muted mb-0">Belum ada ulasan</p></div>`;
+      }
+
+      return `
+        <table class="table table-modern">
+          <thead>
+            <tr><th>ID Produk</th><th>Reviewer</th><th>Judul Review</th><th>Rating</th><th>Tanggal</th><th>Aksi</th></tr>
+          </thead>
+          <tbody>
+            ${reviews.map(review => `
+              <tr>
+                <td><div class="fw-semibold">${review.produk_id}</div></td>
+                <td><div class="fw-semibold">${escapeHtml(review.nama_reviewer || '-')}</div></div></td>
+                <td><div class="fw-semibold">${escapeHtml(review.judul_review || 'Tanpa Judul')}</div></div></td>
+                <td>
+                  <div class="star-rating small">${renderStars(Number(review.rating || 0))}</div>
+                  <small class="text-muted">${(Number(review.rating || 0)).toFixed(1)}</small>
+                </div>
+                <td><small class="text-muted">${formatDate(review.tanggal)}</small></div>
+                <td>
+                  <button onclick="deleteReviewHandler('${review.id}', '${review.produk_id}')" class="action-btn action-btn-delete" title="Hapus Ulasan">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function renderProductsPage() {
+      const products = await fetchAllProducts();
+      return `
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <h3 class="fw-bold m-0"><i class="fas fa-box text-primary me-2"></i>Manajemen Produk</h3>
+          <a href="upload.html" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i>Tambah Produk</a>
+        </div>
+        <div class="table-container">${renderProductsTable(products)}</div>
+      `;
+    }
+
+    async function renderReviewsPage() {
+      const reviews = await fetchAllReviews();
+      return `
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-bold m-0"><i class="fas fa-star text-primary me-2"></i>Manajemen Ulasan</h3>
+        </div>
+        <div class="table-container">${renderReviewsTable(reviews)}</div>
+      `;
+    }
+
+    function renderUploadPage() {
+      return `
+        <div class="welcome-card" style="background: linear-gradient(135deg, #2563eb, #1e40af);">
+          <h3 class="fw-bold mb-2"><i class="fas fa-upload me-2"></i>Upload Produk Baru</h3>
+          <p class="mb-0 opacity-75">Halaman upload akan membawa Anda ke form pengisian produk</p>
+        </div>
+        <div class="text-center py-5">
+          <a href="upload.html" class="btn btn-primary btn-lg rounded-pill px-5 py-3">
+            <i class="fas fa-plus-circle me-2"></i>Buka Halaman Upload Produk
+          </a>
+        </div>
+      `;
+    }
+
+    // ==================== DELETE HANDLERS ====================
+    window.deleteProductHandler = async function(productId) {
+      const result = await Swal.fire({
+        title: 'Hapus Produk?',
+        text: "Produk yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await ApiService.deleteProduk(productId);
+          clearCache();
+          Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Produk berhasil dihapus.' });
+          await loadPage(currentPage);
+        } catch (error) {
+          Swal.fire({ icon: 'error', title: 'Gagal!', text: error.message || 'Gagal menghapus produk.' });
+        }
+      }
+    };
+
+    window.deleteReviewHandler = async function(reviewId, productId) {
+      const result = await Swal.fire({
+        title: 'Hapus Ulasan?',
+        text: "Ulasan yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          if (ApiService.deleteReview) {
+            await ApiService.deleteReview(reviewId, productId);
+          }
+          cachedReviews = null;
+          cachedDashboard = null;
+          Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Ulasan berhasil dihapus.' });
+          await loadPage(currentPage);
+        } catch (error) {
+          Swal.fire({ icon: 'error', title: 'Gagal!', text: error.message || 'Gagal menghapus ulasan.' });
+        }
+      }
+    };
+
+    // ==================== PAGE LOADER ====================
+    async function loadPage(page) {
+      currentPage = page;
+      const contentDiv = document.getElementById('pageContent');
+      contentDiv.innerHTML = `<div class="page-loader"><div class="text-center"><i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i><p class="text-muted">Memuat halaman ${page}...</p></div></div>`;
+      
+      try {
+        let html = '';
+        switch(page) {
+          case 'dashboard': html = await renderDashboardPage(); break;
+          case 'products': html = await renderProductsPage(); break;
+          case 'reviews': html = await renderReviewsPage(); break;
+          case 'upload': html = renderUploadPage(); break;
+          default: html = await renderDashboardPage();
+        }
+        contentDiv.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading page:", error);
+        contentDiv.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle fa-2x text-danger mb-3 d-block"></i><p class="text-danger">Error: ${error.message}</p><button class="btn btn-primary rounded-pill mt-2" onclick="loadPage('${page}')"><i class="fas fa-sync-alt me-2"></i>Coba Lagi</button></div>`;
+      }
+    }
+
+    // ==================== INITIALIZATION ====================
+    async function initDashboard() {
+      currentUser = Session.get();
+      
+      if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      if (currentUser.role !== "admin") {
+        Swal.fire({ icon: "error", title: "Akses Ditolak", text: "Halaman ini hanya dapat diakses oleh Admin." }).then(() => {
+          window.location.href = "index.html";
+        });
+        return;
+      }
+
+      document.getElementById("userName").innerHTML = escapeHtml(currentUser.nama);
+      document.getElementById("userRole").innerHTML = currentUser.role;
+      
+      const today = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById("currentDate").innerHTML = today.toLocaleDateString('id-ID', options);
+
+      document.querySelectorAll('.nav-link[data-page]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+          el.classList.add('active');
+          loadPage(el.getAttribute('data-page'));
+          if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('show');
+        });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        Session.remove();
+        window.location.href = "login.html";
+      });
+
+      document.getElementById('menuToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('show');
+      });
+
+      await loadPage('dashboard');
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboard);
+  </script>
+</body>
+
+</html>

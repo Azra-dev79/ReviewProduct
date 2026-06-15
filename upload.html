@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Kelola Produk - ReviewProduct</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f1f5f9 0%, #f8fafc 100%);
+      min-height: 100vh;
+    }
+
+    /* Modern Form Card */
+    .form-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(2px);
+      border-radius: 40px !important;
+      border: none;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .form-card:hover {
+      box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.18);
+    }
+
+    .form-modern {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+
+    .form-modern:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      outline: none;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+      letter-spacing: -0.2px;
+    }
+
+    .btn-modern {
+      border-radius: 40px;
+      padding: 0.7rem 1.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-success-modern {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: none;
+      color: white;
+    }
+
+    .btn-success-modern:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      box-shadow: 0 12px 20px -10px rgba(15, 23, 42, 0.4);
+    }
+
+    .btn-outline-modern {
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      color: #475569;
+    }
+
+    .btn-outline-modern:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    /* Image preview */
+    .image-preview-area {
+      background: #f1f5f9;
+      border-radius: 24px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.2s;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 180px;
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-status {
+      background: #eef2ff;
+      color: #1e40af;
+      border-radius: 40px;
+      padding: 0.3rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .form-card .card-body {
+        padding: 1.5rem !important;
+      }
+
+      .btn-modern {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="navbarApp"></div>
+
+  <main class="container py-4 py-lg-5 px-3 px-lg-4">
+    <div class="form-card card">
+      <div class="card-body p-4 p-md-5">
+        <!-- Header with gradient accent -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 pb-2 border-bottom border-light">
+          <div>
+            <div class="badge-status d-inline-flex mb-2">
+              <i class="fas fa-cloud-upload-alt me-1"></i> Form Produk
+            </div>
+            <h2 id="formTitle" class="fw-bold mb-1" style="font-size: 1.9rem; background: linear-gradient(135deg, #0f172a, #2d3a5e); background-clip: text; -webkit-background-clip: text; color: transparent;">
+              Upload Produk Baru
+            </h2>
+            <p class="text-muted mb-0">Isi data produk dengan lengkap untuk tampilan terbaik.</p>
+          </div>
+          <a href="index.html" class="btn btn-outline-modern btn-modern">
+            <i class="fas fa-arrow-left me-2"></i> Kembali
+          </a>
+        </div>
+
+        <div id="formAlert"></div>
+
+        <form id="productForm" class="row g-4">
+          <input type="hidden" id="produkEditId" />
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-tag me-2 text-primary"></i>Nama Produk</label>
+            <input type="text" id="namaProduk" class="form-control form-modern" placeholder="Contoh: MacBook Pro M4" required />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-layer-group me-2 text-primary"></i>Kategori</label>
+            <select id="kategoriProduk" class="form-select form-modern" required>
+              <option value="">Memuat kategori...</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-building me-2 text-primary"></i>Brand</label>
+            <input type="text" id="brandProduk" class="form-control form-modern" placeholder="Contoh: Apple, Samsung" required />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-rupiah-sign me-2 text-primary"></i>Harga (Rp)</label>
+            <input type="number" id="hargaProduk" class="form-control form-modern" placeholder="Contoh: 25000000" min="0" required />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label"><i class="fas fa-image me-2 text-primary"></i>URL Gambar Produk</label>
+            <input type="url" id="gambarProduk" class="form-control form-modern" placeholder="https://example.com/gambar.jpg" required />
+            <div id="imagePreviewContainer" class="image-preview-area mt-3" style="display: none;">
+              <img id="imagePreview" class="preview-img" alt="Preview Gambar" />
+              <p class="text-muted small mt-2 mb-0">Preview gambar</p>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label"><i class="fas fa-align-left me-2 text-primary"></i>Deskripsi</label>
+            <textarea id="deskripsiProduk" class="form-control form-modern" rows="5" placeholder="Tulis deskripsi produk secara detail... (fitur, spesifikasi, keunggulan)" required></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"><i class="fas fa-toggle-on me-2 text-primary"></i>Status</label>
+            <select id="statusProduk" class="form-select form-modern">
+              <option value="Aktif">Aktif</option>
+              <option value="Nonaktif">Nonaktif</option>
+            </select>
+          </div>
+
+          <div class="col-12 mt-4 pt-2">
+            <div class="d-flex flex-column flex-md-row gap-3">
+              <button id="btnProduk" type="submit" class="btn btn-success-modern btn-modern px-5">
+                <i class="fas fa-save me-2"></i> Simpan Produk
+              </button>
+              <a href="index.html" class="btn btn-outline-modern btn-modern px-5">
+                <i class="fas fa-times me-2"></i> Batal
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/helpers.js"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    let isEditMode = false;
+    let kategoriData = [];
+
+    document.addEventListener("DOMContentLoaded", initUploadPage);
+
+    async function initUploadPage() {
+      const productForm = document.getElementById("productForm");
+      if (productForm) productForm.addEventListener("submit", simpanProduk);
+
+      // Live preview gambar
+      const gambarInput = document.getElementById("gambarProduk");
+      if (gambarInput) {
+        gambarInput.addEventListener("input", function() {
+          const url = this.value.trim();
+          const previewContainer = document.getElementById("imagePreviewContainer");
+          const previewImg = document.getElementById("imagePreview");
+          if (url && (url.startsWith("http") || url.startsWith("https"))) {
+            previewContainer.style.display = "block";
+            previewImg.src = url;
+            previewImg.onerror = () => {
+              previewImg.src = "https://placehold.co/600x400?text=Invalid+URL";
+            };
+          } else {
+            previewContainer.style.display = "none";
+            previewImg.src = "";
+          }
+        });
+      }
+
+      setPageMode(false);
+      setFormDisabled(true);
+      await loadKategori();
+      await checkEditMode();
+      setFormDisabled(false);
+    }
+
+    async function loadKategori() {
+      const select = document.getElementById("kategoriProduk");
+      if (!select) return;
+      select.innerHTML = `<option value="">Memuat kategori...</option>`;
+      try {
+        const result = await ApiService.getKategori();
+        kategoriData = Array.isArray(result) ? result : [];
+        if (!kategoriData.length) {
+          select.innerHTML = `<option value="">Belum ada kategori</option>`;
+          await showWarning("Belum ada data kategori. Silakan tambah kategori terlebih dahulu.");
+          return;
+        }
+        renderKategoriOptions();
+      } catch (error) {
+        console.error("Load kategori error:", error);
+        kategoriData = [];
+        select.innerHTML = `<option value="">Gagal memuat kategori</option>`;
+        await showError(error.message || "Gagal memuat kategori.");
+      }
+    }
+
+    function renderKategoriOptions(selectedId = "") {
+      const select = document.getElementById("kategoriProduk");
+      if (!select) return;
+      if (!Array.isArray(kategoriData) || !kategoriData.length) {
+        select.innerHTML = `<option value="">Belum ada kategori</option>`;
+        return;
+      }
+      select.innerHTML = `<option value="">-- Pilih Kategori --</option>` + kategoriData.map(kategori => {
+        const id = String(kategori.id || "");
+        const nama = String(kategori.nama_kategori || "-");
+        const selected = String(selectedId) === id ? "selected" : "";
+        return `<option value="${escapeHtml(id)}" ${selected}><i class="fas fa-tag"></i> ${escapeHtml(nama)}</option>`;
+      }).join("");
+    }
+
+    async function checkEditMode() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (!id) {
+        isEditMode = false;
+        setPageMode(false);
+        return;
+      }
+      isEditMode = true;
+      setPageMode(true);
+      try {
+        const produk = await ApiService.getProdukById(id);
+        if (!produk) {
+          await showWarning("Produk tidak ditemukan.");
+          setTimeout(() => window.location.href = "index.html", 900);
+          return;
+        }
+        setValue("produkEditId", produk.id);
+        setValue("namaProduk", produk.nama_produk);
+        setValue("brandProduk", produk.brand);
+        setValue("hargaProduk", produk.harga);
+        setValue("gambarProduk", produk.gambar);
+        setValue("deskripsiProduk", produk.deskripsi);
+        setValue("statusProduk", produk.status || "Aktif");
+        renderKategoriOptions(produk.kategori_id);
+        setValue("kategoriProduk", produk.kategori_id);
+        // trigger preview
+        const gambarInput = document.getElementById("gambarProduk");
+        if (gambarInput) gambarInput.dispatchEvent(new Event('input'));
+      } catch (error) {
+        console.error("Check edit mode error:", error);
+        await showError(error.message || "Gagal memuat detail produk untuk diedit.");
+      }
+    }
+
+    async function simpanProduk(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnProduk");
+      if (!btn) return;
+      const data = {
+        id: getValue("produkEditId"),
+        kategori_id: getValue("kategoriProduk").trim(),
+        nama_produk: getValue("namaProduk").trim(),
+        brand: getValue("brandProduk").trim(),
+        harga: getValue("hargaProduk"),
+        gambar: getValue("gambarProduk").trim(),
+        deskripsi: getValue("deskripsiProduk").trim(),
+        status: getValue("statusProduk") || "Aktif",
+      };
+      const errorMessage = validateForm(data);
+      if (errorMessage) {
+        await showWarning(errorMessage);
+        return;
+      }
+      if (isEditMode && !data.id) {
+        await showError("ID produk tidak ditemukan.");
+        return;
+      }
+      setButtonLoading(btn, isEditMode ? "Mengupdate..." : "Menyimpan...");
+      setFormDisabled(true);
+      showLoadingAlert(isEditMode ? "Mengupdate produk..." : "Menyimpan produk...");
+      try {
+        const result = isEditMode ? await ApiService.updateProduk(data) : await ApiService.tambahProduk(data);
+        closeLoadingAlert();
+        await showSuccess(result.message || (isEditMode ? "Produk berhasil diperbarui!" : "Produk berhasil ditambahkan!"));
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error("Simpan produk error:", error);
+        closeLoadingAlert();
+        await showError(error.message || "Gagal terhubung ke server. Periksa koneksi.");
+        setFormDisabled(false);
+        resetButton(btn);
+      }
+    }
+
+    function validateForm(data) {
+      if (!data.nama_produk) return "Nama produk wajib diisi.";
+      if (!data.kategori_id) return "Kategori wajib dipilih.";
+      if (!data.brand) return "Brand wajib diisi.";
+      if (data.harga === "" || data.harga === null || data.harga === undefined) return "Harga wajib diisi.";
+      if (isNaN(Number(data.harga)) || Number(data.harga) < 0) return "Harga harus berupa angka valid.";
+      if (!data.gambar) return "URL gambar wajib diisi.";
+      if (!data.deskripsi) return "Deskripsi wajib diisi.";
+      return "";
+    }
+
+    function setPageMode(editMode) {
+      const title = document.getElementById("formTitle");
+      const btn = document.getElementById("btnProduk");
+      if (title) title.innerText = editMode ? "Edit Produk" : "Upload Produk Baru";
+      if (btn) btn.innerHTML = editMode ? '<i class="fas fa-sync-alt me-2"></i> Update Produk' : '<i class="fas fa-cloud-upload-alt me-2"></i> Simpan Produk';
+    }
+
+    function setFormDisabled(disabled) {
+      ["namaProduk", "kategoriProduk", "brandProduk", "hargaProduk", "gambarProduk", "deskripsiProduk", "statusProduk"].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) field.disabled = disabled;
+      });
+      const btn = document.getElementById("btnProduk");
+      if (btn) btn.disabled = disabled;
+    }
+
+    function setButtonLoading(btn, text) {
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> ${escapeHtml(text)}`;
+    }
+
+    function resetButton(btn) {
+      btn.disabled = false;
+      btn.innerHTML = isEditMode ? '<i class="fas fa-sync-alt me-2"></i> Update Produk' : '<i class="fas fa-cloud-upload-alt me-2"></i> Simpan Produk';
+    }
+
+    function showSuccess(message) {
+      return Swal.fire({
+        icon: "success",
+        title: "Berhasil",
+        text: message,
+        background: "#ffffff",
+        confirmButtonColor: "#0f172a",
+        confirmButtonText: "OK",
+        borderRadius: "24px",
+      });
+    }
+
+    function showError(message) {
+      return Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: message,
+        background: "#ffffff",
+        confirmButtonColor: "#dc2626",
+        confirmButtonText: "Tutup",
+        borderRadius: "24px",
+      });
+    }
+
+    function showWarning(message) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Perhatian",
+        text: message,
+        background: "#ffffff",
+        confirmButtonColor: "#f59e0b",
+        confirmButtonText: "Mengerti",
+        borderRadius: "24px",
+      });
+    }
+
+    function showLoadingAlert(title = "Memproses...") {
+      Swal.fire({
+        title,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading(),
+        background: "#ffffff",
+        borderRadius: "28px",
+      });
+    }
+
+    function closeLoadingAlert() { Swal.close(); }
+    function getValue(id) { const el = document.getElementById(id); return el ? String(el.value || "") : ""; }
+    function setValue(id, value) { const el = document.getElementById(id); if (el) el.value = value === null || value === undefined ? "" : String(value); }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

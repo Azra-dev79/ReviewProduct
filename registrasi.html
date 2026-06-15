@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Daftar | ReviewProduct</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* UI REFINED: Clean, minimal, smaller elements */
+        .register-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 28px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .register-card:hover {
+            box-shadow: 0 24px 40px -14px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Logo lebih kecil & refined */
+        .logo-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem auto;
+            font-size: 1.6rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography lebih proporsional & clean */
+        .register-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #0a0e1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .register-subtitle {
+            font-size: 0.8rem;
+            color: #6c6f7e;
+            font-weight: 400;
+        }
+
+        /* Label lebih kecil, modern, uppercase ringan */
+        .form-label-clean {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #5a5e70;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Input fields: padding lebih ramping, font lebih kecil, border refined */
+        .input-clean {
+            border-radius: 14px;
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 450;
+            border: 1.5px solid #e9edf2;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            color: #1a1e2c;
+        }
+
+        .input-clean:focus {
+            border-color: #0f172a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+        }
+
+        /* Tombol registrasi lebih ramping, modern */
+        .btn-register-clean {
+            background: #0f172a;
+            border: none;
+            border-radius: 40px;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-register-clean:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+        }
+
+        .btn-register-clean:active {
+            transform: translateY(1px);
+        }
+
+        /* Link login lebih clean */
+        .login-link-clean {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .login-link-clean i {
+            font-size: 0.7rem;
+        }
+
+        .login-link-clean:hover {
+            color: #334155;
+            text-decoration: underline;
+        }
+
+        /* Alert styling lebih minimal */
+        .alert-clean {
+            border-radius: 16px;
+            font-size: 0.8rem;
+            padding: 0.7rem 1rem;
+            border: none;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-clean i {
+            font-size: 0.85rem;
+        }
+
+        /* Spacing antar elemen */
+        .form-group-spacing {
+            margin-bottom: 1.25rem;
+        }
+
+        .bottom-section {
+            margin-top: 1.5rem;
+            text-align: center;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f0f2f5;
+        }
+
+        .bottom-section .text-muted-custom {
+            font-size: 0.75rem;
+            color: #6c6f7e;
+        }
+
+        /* Loading state button */
+        button:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+        }
+
+        /* Responsive adjustment */
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 1.5rem;
+            }
+            .register-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Password strength indicator (opsional UX) */
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="w-100">
+    <div class="register-card mx-auto">
+        <!-- Header Section - logo lebih kecil dan clean -->
+        <div class="text-center mb-3">
+            <div class="logo-box mb-2">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1 class="register-title">Daftar</h1>
+            <p class="register-subtitle">Buat akun ReviewProduct baru</p>
+        </div>
+
+        <!-- Alert Container dengan styling clean -->
+        <div id="alertContainer"></div>
+
+        <form id="registerForm">
+            <!-- Nama Lengkap Field -->
+            <div class="form-group-spacing">
+                <label class="form-label-clean">
+                    <i class="far fa-user me-1" style="font-size: 0.65rem;"></i> Nama Lengkap
+                </label>
+                <input 
+                    type="text" 
+                    id="nama" 
+                    class="form-control input-clean" 
+                    placeholder="Nama lengkap" 
+                    autocomplete="name"
+                    required>
+            </div>
+
+            <!-- Email Field -->
+            <div class="form-group-spacing">
+                <label class="form-label-clean">
+                    <i class="far fa-envelope me-1" style="font-size: 0.65rem;"></i> Alamat Email
+                </label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    class="form-control input-clean" 
+                    placeholder="nama@email.com" 
+                    autocomplete="email"
+                    required>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group-spacing">
+                <label class="form-label-clean">
+                    <i class="fas fa-lock me-1" style="font-size: 0.65rem;"></i> Kata Sandi
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="form-control input-clean" 
+                    placeholder="Minimal 6 karakter" 
+                    autocomplete="new-password"
+                    required>
+                <!-- Password hint minimal -->
+                <div class="password-strength text-muted" id="passwordHint">
+                    <i class="fas fa-info-circle" style="font-size: 0.65rem;"></i> Gunakan minimal 6 karakter
+                </div>
+            </div>
+
+            <!-- Tombol Registrasi -->
+            <button type="submit" id="btnRegister" class="btn btn-register-clean w-100">
+                <span id="btnText">
+                    <i class="fas fa-user-plus" style="font-size: 0.75rem;"></i>
+                    <span>Daftar Sekarang</span>
+                </span>
+            </button>
+
+            <!-- Link Login -->
+            <div class="bottom-section">
+                <span class="text-muted-custom">Sudah punya akun? </span>
+                <a href="login.html" class="login-link-clean">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/helpers.js"></script>
+
+<script>
+// ============================================================
+// REGISTER PAGE UI/UX - CLEAN & MINIMAL WITH SAME PATTERN
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", initRegisterPage);
+
+function initRegisterPage() {
+    // Cek apakah user sudah login (jika sudah, redirect ke index)
+    let storedUser = null;
+    try {
+        storedUser = JSON.parse(localStorage.getItem("user"));
+    } catch(e) {}
+
+    if (storedUser && storedUser.token) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    // Attach submit handler
+    const registerForm = document.getElementById("registerForm");
+    if (registerForm) {
+        registerForm.addEventListener("submit", handleRegister);
+    }
+
+    // UX Enhancement: Clear alert when user starts typing in any field
+    const namaInput = document.getElementById("nama");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const clearAlertOnInput = () => {
+        const alertContainer = document.getElementById("alertContainer");
+        if (alertContainer && alertContainer.innerHTML.trim() !== "") {
+            const existingAlert = alertContainer.firstChild;
+            if (existingAlert && existingAlert.style) {
+                existingAlert.style.transition = "opacity 0.2s";
+                existingAlert.style.opacity = "0";
+                setTimeout(() => {
+                    if (alertContainer.innerHTML.includes(existingAlert.outerHTML)) {
+                        alertContainer.innerHTML = "";
+                    }
+                }, 200);
+            } else {
+                alertContainer.innerHTML = "";
+            }
+        }
+    };
+
+    if (namaInput) namaInput.addEventListener("input", clearAlertOnInput);
+    if (emailInput) emailInput.addEventListener("input", clearAlertOnInput);
+    if (passwordInput) passwordInput.addEventListener("input", clearAlertOnInput);
+
+    // Real-time password hint (UX improvement)
+    if (passwordInput) {
+        passwordInput.addEventListener("input", function() {
+            const hint = document.getElementById("passwordHint");
+            if (hint) {
+                const val = this.value;
+                if (val.length === 0) {
+                    hint.innerHTML = '<i class="fas fa-info-circle" style="font-size: 0.65rem;"></i> Gunakan minimal 6 karakter';
+                    hint.style.color = "#6c6f7e";
+                } else if (val.length < 6) {
+                    hint.innerHTML = '<i class="fas fa-exclamation-circle" style="font-size: 0.65rem;"></i> Password terlalu pendek (minimal 6 karakter)';
+                    hint.style.color = "#dc2626";
+                } else {
+                    hint.innerHTML = '<i class="fas fa-check-circle" style="font-size: 0.65rem;"></i> Password kuat';
+                    hint.style.color = "#10b981";
+                }
+            }
+        });
+    }
+}
+
+async function handleRegister(event) {
+    event.preventDefault();
+
+    const nama = document.getElementById("nama").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    // Validasi client-side (UX feedback)
+    if (!nama || !email || !password) {
+        showAlert("danger", "Semua field harus diisi");
+        // Shake subtle effect
+        const card = document.querySelector(".register-card");
+        if (card) {
+            card.style.transform = "translateX(3px)";
+            setTimeout(() => { if(card) card.style.transform = ""; }, 100);
+            setTimeout(() => { if(card) card.style.transform = ""; }, 150);
+        }
+        return;
+    }
+
+    if (nama.length < 2) {
+        showAlert("danger", "Nama lengkap minimal 2 karakter");
+        return;
+    }
+
+    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showAlert("danger", "Format email tidak valid");
+        return;
+    }
+
+    if (password.length < 6) {
+        showAlert("danger", "Password harus minimal 6 karakter");
+        return;
+    }
+
+    const button = document.getElementById("btnRegister");
+    const buttonSpan = document.getElementById("btnText");
+
+    try {
+        setLoading(button, buttonSpan, true);
+
+        // Panggil API service register
+        if (typeof ApiService === 'undefined') {
+            throw new Error("Layanan tidak tersedia. Pastikan file api.js sudah dimuat.");
+        }
+
+        if (typeof ApiService.register !== 'function') {
+            throw new Error("Method register tidak ditemukan di ApiService");
+        }
+
+        await ApiService.register(nama, email, password);
+
+        // Success alert
+        showAlert("success", "Registrasi berhasil! Mengarahkan ke halaman login...");
+
+        // Redirect ke login setelah delay
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1500);
+
+    } catch (error) {
+        console.error("Register error:", error);
+        let errorMessage = error.message || "Registrasi gagal. Silakan coba lagi.";
+        
+        // Friendly error messages
+        if (errorMessage.toLowerCase().includes("email already exists") || 
+            errorMessage.toLowerCase().includes("email sudah terdaftar") ||
+            errorMessage.toLowerCase().includes("duplicate")) {
+            errorMessage = "Email sudah terdaftar. Silakan gunakan email lain.";
+        } else if (errorMessage.toLowerCase().includes("network") || errorMessage.includes("fetch")) {
+            errorMessage = "Koneksi bermasalah. Periksa koneksi internet Anda.";
+        }
+        
+        showAlert("danger", errorMessage);
+        
+        // UX: highlight error fields (ringan)
+        const emailEl = document.getElementById("email");
+        if (emailEl && errorMessage.includes("email")) {
+            emailEl.style.borderColor = "#fecaca";
+            setTimeout(() => {
+                if (emailEl) emailEl.style.borderColor = "";
+            }, 1500);
+        }
+        
+    } finally {
+        setLoading(button, buttonSpan, false);
+    }
+}
+
+function setLoading(button, buttonSpan, isLoading) {
+    if (!button || !buttonSpan) return;
+    button.disabled = isLoading;
+    
+    if (isLoading) {
+        buttonSpan.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 0.75rem;"></i> <span>Memproses...</span>';
+    } else {
+        buttonSpan.innerHTML = '<i class="fas fa-user-plus" style="font-size: 0.75rem;"></i> <span>Daftar Sekarang</span>';
+    }
+}
+
+function showAlert(type, message) {
+    const alertContainer = document.getElementById("alertContainer");
+    if (!alertContainer) return;
+    
+    // Icon based on alert type
+    let iconHtml = "";
+    if (type === "success") {
+        iconHtml = '<i class="fas fa-check-circle" style="font-size: 0.85rem;"></i>';
+    } else if (type === "danger") {
+        iconHtml = '<i class="fas fa-exclamation-triangle" style="font-size: 0.85rem;"></i>';
+    } else {
+        iconHtml = '<i class="fas fa-info-circle" style="font-size: 0.85rem;"></i>';
+    }
+    
+    // Map bootstrap alert class with clean style
+    let alertClass = "alert-clean";
+    if (type === "success") alertClass += " alert-success bg-success bg-opacity-10 text-success border-0";
+    else if (type === "danger") alertClass += " alert-danger bg-danger bg-opacity-10 text-danger border-0";
+    else alertClass += " alert-info bg-info bg-opacity-10 text-info border-0";
+    
+    const alertHtml = `
+        <div class="${alertClass}" role="alert" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                ${iconHtml}
+                <span>${escapeHtml(message)}</span>
+            </div>
+            <button type="button" class="btn-close btn-close-sm" style="font-size: 0.6rem;" onclick="this.closest('.alert-clean').remove()" aria-label="Tutup"></button>
+        </div>
+    `;
+    
+    alertContainer.innerHTML = alertHtml;
+    
+    // Auto dismiss after 4 seconds for success or danger (better UX)
+    const alertDiv = alertContainer.querySelector(".alert-clean");
+    if (alertDiv) {
+        setTimeout(() => {
+            if (alertDiv && alertDiv.parentElement) {
+                alertDiv.style.transition = "opacity 0.25s ease";
+                alertDiv.style.opacity = "0";
+                setTimeout(() => {
+                    if (alertDiv.parentElement) alertDiv.remove();
+                }, 250);
+            }
+        }, 4000);
+    }
+}
+
+// Helper untuk menghindari XSS
+function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// ============================================================
+// FALLBACK / MOCK (untuk testing UI jika ApiService belum ada)
+// Tidak mengganggu struktur utama, hanya untuk preview
+// ============================================================
+if (typeof ApiService === 'undefined') {
+    console.warn("[UI Fallback] ApiService tidak ditemukan, menggunakan mock untuk tampilan. Pastikan file api.js tersedia untuk produksi.");
+    window.ApiService = {
+        async register(nama, email, password) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Simulasi: email yang sudah terdaftar (demo@reviewproduct.com)
+                    if (email === "demo@reviewproduct.com") {
+                        reject(new Error("Email sudah terdaftar. Silakan gunakan email lain."));
+                    } else if (email && password && nama && password.length >= 6) {
+                        resolve({ success: true, message: "Registrasi berhasil" });
+                    } else {
+                        reject(new Error("Registrasi gagal. Periksa kembali data Anda."));
+                    }
+                }, 1000);
+            });
+        }
+    };
+}
+
+if (typeof Session === 'undefined') {
+    window.Session = {
+        set(userData) {
+            localStorage.setItem("user", JSON.stringify(userData));
+            if (userData.token) localStorage.setItem("token", userData.token);
+        },
+        get() {
+            try {
+                return JSON.parse(localStorage.getItem("user"));
+            } catch(e) { return null; }
+        },
+        clear() {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+        }
+    };
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
